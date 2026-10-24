@@ -37,14 +37,43 @@
 
   const welcome = document.querySelector("#quiz-welcome"), play = document.querySelector("#quiz-play"), result = document.querySelector("#quiz-result");
   const answers = document.querySelector("#answer-list"), feedback = document.querySelector("#answer-feedback"), next = document.querySelector("#next-question");
+  const hintButton = document.querySelector("#show-hint"), hintText = document.querySelector("#hint-text");
   const track = document.querySelector("#progress-track"), fill = document.querySelector("#progress-fill"), best = document.querySelector("#best-score");
   let pool = [], index = 0, score = 0, wrong = [], answered = false, isReview = false;
+  const hints = [
+    "Standart anatomik pozisyonda kişi dik durur ve avuç içleri öne bakar.",
+    "Proksimal, distal teriminin tersidir: uzvun başlangıcına daha yakın.",
+    "Kalça ile diz arasında bulunan uzun kemiği düşün.",
+    "Omuz ile dirsek arasındaki kemik.",
+    "Anatomik pozisyonda başparmak tarafı, önkolun lateral tarafıdır.",
+    "Dizin önünde bulunan, quadriceps tendonuyla ilişkili kemik.",
+    "Dirseği bükmeye yardım eden iki başlı kas.",
+    "Dirseği açma hareketi ekstansiyondur.",
+    "Dizin açılmasını sağlayan büyük ön uyluk kas grubu.",
+    "Omuz ve kalça eklemleri geniş hareket açıklığına sahip top-yuva tipindedir.",
+    "Bu eklem türünde eklem boşluğu ve sinovyal sıvı bulunur.",
+    "Medial, vücudun orta çizgisine daha yakın demektir."
+  ];
+  function prepareQuestions(items) {
+    const offset = Math.floor(Math.random() * 4);
+    return items.map((original, i) => {
+      const item = {...original, options: [...original.options]};
+      const correct = item.options[item.answer];
+      const distractors = item.options.filter((_, n) => n !== item.answer);
+      for (let j = distractors.length - 1; j > 0; j--) { const k = Math.floor(Math.random() * (j + 1)); [distractors[j], distractors[k]] = [distractors[k], distractors[j]]; }
+      const target = (i + offset) % item.options.length;
+      distractors.splice(target, 0, correct);
+      item.options = distractors; item.answer = target;
+      item.hint = original.hint || hints[data.questions.indexOf(original)] || "Sorudaki Latince terimi ve ilgili anatomik bölgeyi hatırla.";
+      return item;
+    });
+  }
   const letters = ["A", "B", "C", "D"];
 
   function readBest() { try { return Number(localStorage.getItem("ftr-atlasi-best-score") || 0); } catch { return 0; } }
   function showBest() { const value = readBest(); if (value > 0) { best.hidden = false; best.textContent = `En iyi sonucun: ${value} / ${data.questions.length}`; } }
   showBest();
-  function startQuiz(review = false) { isReview = review; pool = review ? [...wrong] : [...data.questions]; index = 0; score = 0; wrong = []; answered = false; welcome.hidden = true; result.hidden = true; play.hidden = false; renderQuestion(); }
+  function startQuiz(review = false) { isReview = review; pool = prepareQuestions(review ? [...wrong] : [...data.questions]); index = 0; score = 0; wrong = []; answered = false; welcome.hidden = true; result.hidden = true; play.hidden = false; renderQuestion(); }
   function renderQuestion() {
     if (index >= pool.length) return renderResult();
     answered = false; const item = pool[index];
@@ -53,7 +82,7 @@
     document.querySelector("#question-category").textContent = item.category;
     const title = document.querySelector("#question-title"); title.textContent = item.question;
     track.setAttribute("aria-valuemax", pool.length); track.setAttribute("aria-valuenow", index); fill.style.width = `${Math.round(index / pool.length * 100)}%`;
-    answers.replaceChildren(); feedback.hidden = true; feedback.className = "feedback"; feedback.replaceChildren(); next.hidden = true;
+    answers.replaceChildren(); hintText.hidden = true; hintText.textContent = ""; hintButton.hidden = false; hintButton.disabled = false; feedback.hidden = true; feedback.className = "feedback"; feedback.replaceChildren(); next.hidden = true;
     item.options.forEach((option, choice) => { const button = document.createElement("button"); button.type = "button"; button.className = "answer-option"; const letter = document.createElement("span"); letter.className = "answer-letter"; letter.textContent = letters[choice]; const label = document.createElement("span"); label.textContent = option; button.append(letter, label); button.addEventListener("click", () => choose(choice)); answers.append(button); });
     title.focus({ preventScroll: true });
   }
@@ -62,7 +91,7 @@
     buttons.forEach((button, i) => { button.disabled = true; if (i === item.answer) button.classList.add("answer-correct"); if (i === choice && choice !== item.answer) button.classList.add("answer-wrong"); });
     const correct = choice === item.answer; if (correct) score++; else wrong.push(item);
     document.querySelector("#live-score").textContent = `Puan ${score}`; track.setAttribute("aria-valuenow", index + 1); fill.style.width = `${Math.round((index + 1) / pool.length * 100)}%`;
-    feedback.hidden = false; feedback.classList.toggle("wrong", !correct); feedback.append(document.createTextNode(`${correct ? "Doğru! " : "Birlikte hatırlayalım. "}${item.explanation} `));
+    hintButton.disabled = true; feedback.hidden = false; feedback.classList.toggle("wrong", !correct); feedback.append(document.createTextNode(`${correct ? "Doğru! " : "Birlikte hatırlayalım. "}${item.explanation} `));
     const link = document.createElement("a"); link.href = item.source; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = "Kaynak"; feedback.append(link);
     next.textContent = index === pool.length - 1 ? "Sonucu gör →" : "Sonraki soru →"; next.hidden = false;
   }
@@ -78,6 +107,7 @@
     document.querySelector("#retry-wrong").hidden = wrong.length === 0;
     if (!isReview && score > readBest()) { try { localStorage.setItem("ftr-atlasi-best-score", score); } catch { /* Depolama kapalı olsa da quiz kullanılabilir. */ } showBest(); }
   }
+  hintButton.addEventListener("click", () => { const item = pool[index]; hintText.textContent = item.hint || "Sorudaki anatomik bölgeyi ve Latince adı hatırla."; hintText.hidden = false; hintButton.hidden = true; });
   document.querySelector("#start-quiz").addEventListener("click", () => startQuiz());
   next.addEventListener("click", () => { index++; renderQuestion(); });
   document.querySelector("#restart-quiz").addEventListener("click", () => startQuiz());
