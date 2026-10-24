@@ -107,6 +107,23 @@
     document.querySelector("#retry-wrong").hidden = wrong.length === 0;
     if (!isReview && score > readBest()) { try { localStorage.setItem("ftr-atlasi-best-score", score); } catch { /* Depolama kapalı olsa da quiz kullanılabilir. */ } showBest(); }
   }
+  const modelData = {
+    femur: {url:"https://sketchfab.com/models/a9c1f1a88b104c3fbfe975fa10b31b31/embed?autostart=0&ui_theme=dark",name:"Uyluk kemiği",latin:"Femur",source:"https://sketchfab.com/3d-models/human-femur-a9c1f1a88b104c3fbfe975fa10b31b31",facts:["İnsan vücudunun en uzun kemiğidir.","Proksimal ucu kalça eklemine katılır.","Distal ucu diz ekleminin oluşumuna katılır."]},
+    tibia: {url:"https://sketchfab.com/models/7c1979d6127749bc80a9d9276d24edcd/embed?autostart=0&ui_theme=dark",name:"Kaval kemiği",latin:"Tibia",source:"https://sketchfab.com/3d-models/human-tibia-7c1979d6127749bc80a9d9276d24edcd",facts:["Alt bacağın iç tarafında bulunur.","Alt bacağın temel ağırlık taşıyan kemiğidir.","Diz ve ayak bileği eklemlerine katılır."]},
+    fibula: {url:"https://sketchfab.com/models/5f239617db8d4d2eaaf13b8616acf70e/embed?autostart=0&ui_theme=dark",name:"Kamış kemiği",latin:"Fibula",source:"https://sketchfab.com/3d-models/human-fibula-5f239617db8d4d2eaaf13b8616acf70e",facts:["Alt bacağın dış tarafında yer alır.","Tibia kadar ağırlık taşımaz.","Ayak bileğinin dış tarafındaki çıkıntıya katılır."]},
+    foot: {url:"https://sketchfab.com/models/3741b9acf74b4206aa6fd9dbb20ad583/embed?autostart=0&ui_theme=dark",name:"Ayak kemikleri",latin:"Ossa pedis",source:"https://sketchfab.com/3d-models/human-foot-bones-3741b9acf74b4206aa6fd9dbb20ad583",facts:["Ayak kemikleri tarsal, metatarsal ve falanks kemiklerine ayrılır.","Yedi tarsal kemik ayak bileği ve arka ayak bölgesinde bulunur.","Her ayakta beş metatarsal kemik vardır."]}
+  };
+  document.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
+    const item = modelData[button.dataset.model]; if (!item) return;
+    document.querySelector("#model-frame").src = item.url;
+    document.querySelector("#model-frame").title = item.name + " — " + item.latin + " 3B modeli";
+    document.querySelector("#model-name").textContent = item.name;
+    document.querySelector("#model-latin").textContent = item.latin;
+    const facts = document.querySelector("#model-facts"); facts.replaceChildren();
+    item.facts.forEach((fact) => { const li = document.createElement("li"); li.textContent = fact; facts.append(li); });
+    document.querySelector("#model-source").href = item.source;
+    document.querySelectorAll("[data-model]").forEach((b) => { const active = b === button; b.classList.toggle("is-active", active); b.setAttribute("aria-pressed", String(active)); });
+  }));
   hintButton.addEventListener("click", () => { const item = pool[index]; hintText.textContent = item.hint || "Sorudaki anatomik bölgeyi ve Latince adı hatırla."; hintText.hidden = false; hintButton.hidden = true; });
   document.querySelector("#start-quiz").addEventListener("click", () => startQuiz());
   next.addEventListener("click", () => { index++; renderQuestion(); });
