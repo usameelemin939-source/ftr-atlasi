@@ -22,8 +22,13 @@
       const title = document.createElement("h3"); title.textContent = term.tr;
       const latin = document.createElement("p"); latin.className = "term-latin"; latin.lang = "la"; latin.textContent = term.la;
       const description = document.createElement("p"); description.className = "term-description"; description.textContent = term.description;
-      const source = document.createElement("a"); source.className = "term-source"; source.href = term.source; source.target = "_blank"; source.rel = "noopener noreferrer"; source.textContent = "Kaynağı gör ↗";
-      card.append(top, title, latin, description, source); fragment.append(card);
+      const details = document.createElement("details"); details.className = "term-details";
+      const summary = document.createElement("summary"); summary.textContent = "Kartı genişlet";
+      const extra = document.createElement("div"); extra.className = "term-extra";
+      const label = document.createElement("strong"); label.textContent = "Hatırlatma";
+      const note = document.createElement("p"); note.textContent = term.description;
+      extra.append(label, note); details.append(summary, extra);
+      card.append(top, title, latin, description, details); fragment.append(card);
     });
     grid.append(fragment); grid.hidden = terms.length === 0; grid.setAttribute("aria-busy", "false"); empty.hidden = terms.length > 0;
     count.textContent = `${terms.length} terim gösteriliyor`;
@@ -92,7 +97,7 @@
     const correct = choice === item.answer; if (correct) score++; else wrong.push(item);
     document.querySelector("#live-score").textContent = `Puan ${score}`; track.setAttribute("aria-valuenow", index + 1); fill.style.width = `${Math.round((index + 1) / pool.length * 100)}%`;
     hintButton.disabled = true; feedback.hidden = false; feedback.classList.toggle("wrong", !correct); feedback.append(document.createTextNode(`${correct ? "Doğru! " : "Birlikte hatırlayalım. "}${item.explanation} `));
-    const link = document.createElement("a"); link.href = item.source; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = "Kaynak"; feedback.append(link);
+    
     next.textContent = index === pool.length - 1 ? "Sonucu gör →" : "Sonraki soru →"; next.hidden = false;
   }
   function renderResult() {
