@@ -4,9 +4,11 @@ This small Android app opens the published FTR Atlası site in Android System We
 
 ## Build a test APK
 
-Open this android folder in Android Studio and allow Gradle sync to install the required Android SDK components. Or use a machine with JDK 17, Gradle 9.6.0, and Android SDK Platform 36:
+Open this android folder in Android Studio and allow Gradle sync to install the required Android SDK components. Or use a machine with JDK 17 and Android SDK Platform 36:
 
-    gradle :app:assembleDebug
+    gradlew.bat :app:assembleDebug
+
+On macOS or Linux, use ./gradlew :app:assembleDebug. The wrapper downloads the pinned Gradle distribution and verifies its SHA-256 checksum.
 
 The debug APK is written to:
 
