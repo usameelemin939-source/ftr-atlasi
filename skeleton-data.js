@@ -118,4 +118,37 @@
       {label:"FIPAT / IFAA · Terminologia Anatomica", url:"https://ifaa.unifr.ch/Public/TNAEntryPage/prop/HomeTNAPublicLAEN.html"}
     ]
   };
+  function roman(number) {
+    const symbols=[[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+    let result="";
+    for(const [value,symbol] of symbols) while(number>=value){result+=symbol;number-=value}
+    return result;
+  }
+  function expandBone(bone) {
+    const vertebra=bone.tr.match(/^(C|T|L)(\d+)–(C|T|L)?(\d+)/);
+    if(vertebra&&bone.region==="spine") {
+      const start=Number(vertebra[2]),end=Number(vertebra[4]),prefix=vertebra[1];
+      const series={C:["cervicalis","boyun omuru"],T:["thoracica","göğüs omuru"],L:["lumbalis","bel omuru"]}[prefix];
+      return Array.from({length:end-start+1},(_,i)=>({...bone,tr:(start+i)+". "+series[1],la:"Vertebra "+series[0]+" "+roman(start+i),side:"Orta hat"}));
+    }
+    const rib=bone.tr.match(/^(\d+)\.–(\d+)\. (?:yüzen )?kaburgalar$/);
+    if(rib&&bone.region==="thorax") {
+      const out=[];
+      for(let n=Number(rib[1]);n<=Number(rib[2]);n++) for(const side of ["Sağ","Sol"]) out.push({...bone,tr:n+". "+(bone.tr.includes("yüzen")?"yüzen ":"")+"kaburga",la:(bone.tr.includes("yüzen")?"Costa fluctuans ":"Costa ")+roman(n),side});
+      return out;
+    }
+    if(bone.count===8&&/II\.–V\./.test(bone.tr)) {
+      const position=bone.tr.includes("proksimal")?"proksimal":bone.tr.includes("orta")?"orta":"distal";
+      const latinPosition=bone.la.includes("proximales")?"proximalis":bone.la.includes("mediae")?"media":"distalis";
+      const foot=bone.la.includes("pedis")?" pedis":"";
+      const out=[];
+      for(const digit of ["II","III","IV","V"]) for(const side of ["Sağ","Sol"]) out.push({...bone,tr:side+" "+digit+". parmak "+position+" falanksı",la:"Phalanx "+latinPosition+" digiti "+digit+foot,side});
+      return out;
+    }
+    if(bone.count===2) return [{...bone,tr:"Sağ "+bone.tr,side:"Sağ"},{...bone,tr:"Sol "+bone.tr,side:"Sol"}];
+    if(bone.count===1) return [{...bone,side:"Tek kemik"}];
+    throw new Error("Tanımsız kemik sayım grubu: "+bone.tr);
+  }
+  window.FTR_SKELETON.instances=bones.flatMap(expandBone);
+  window.FTR_SKELETON.expandedCount=window.FTR_SKELETON.instances.length;
 })();
