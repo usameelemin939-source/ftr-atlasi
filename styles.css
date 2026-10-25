@@ -155,3 +155,6 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline-color:#168ba2}
 .daily-plan-complete{border:1px solid #c4d8e4;border-radius:999px;padding:.5rem .75rem;background:#fff;color:#18354b;font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}
 .daily-plan-complete:disabled{opacity:.75;cursor:default;background:#e8f5f1;border-color:#b9dfd2}
 @media(max-width:560px){.daily-plan-actions{align-items:flex-start;flex-direction:column}.daily-plan-complete{white-space:normal;text-align:left}}
+
+/* A clear count-based cover for the full skeletal atlas */
+.bone-count-art{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:#216f91;text-align:center;line-height:1.1}.bone-count-art strong{font-size:clamp(3.2rem,7vw,5.5rem);font-weight:900;letter-spacing:-.08em}.bone-count-art span{font-size:.75rem;font-weight:900;letter-spacing:.16em}.bone-count-art small{margin-top:9px;color:#426783;font-size:.78rem;font-weight:700}

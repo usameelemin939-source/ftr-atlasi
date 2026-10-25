@@ -23,6 +23,8 @@ jobs:
         run: |
           node --check app.js
           node --check data.js
+          node --check skeleton-data.js
+          node --check skeleton-atlas.js
 
       - name: Check inline JavaScript in dersler.html
         run: |
@@ -41,6 +43,26 @@ jobs:
             process.exit(1);
           }
           console.log(`Syntax OK: ${checked} inline script block(s).`);
+          NODE
+
+      - name: Check the full adult skeleton inventory
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const context = { window: {} };
+          vm.runInNewContext(fs.readFileSync('skeleton-data.js', 'utf8'), context);
+          const data = context.window.FTR_SKELETON;
+          const total = data.bones.reduce((sum, bone) => sum + bone.count, 0);
+          if (total !== 206 || data.expandedCount !== 206 || data.instances.length !== 206) {
+            console.error('Expected 206 individually listed adult bones; got', total, data.expandedCount);
+            process.exit(1);
+          }
+          if (data.instances.some((bone) => !bone.tr || !bone.la || !bone.landmarks.length)) {
+            console.error('A bone is missing its Turkish name, Latin name, or landmarks.');
+            process.exit(1);
+          }
+          console.log('Adult skeleton OK: 206 bones, named and expanded individually.');
           NODE
 
       - name: Check duplicate HTML IDs on the home page
