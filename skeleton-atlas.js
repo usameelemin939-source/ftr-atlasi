@@ -19,47 +19,7 @@
   ];
   let active = "all";
   const normalize = (value) => value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i");
-  function expand(bone) {
-    const match = bone.tr.match(/^(C|T|L)(\d+)–(C|T|L)?(\d+)/);
-    if (match && bone.region === "spine") {
-      const start = Number(match[2]), end = Number(match[4]), prefix = match[1];
-      const series = {C:["cervicalis","boyun omuru"],T:["thoracica","göğüs omuru"],L:["lumbalis","bel omuru"]}[prefix];
-      return Array.from({length:end-start+1},(_,i)=>({...bone,tr:(start+i)+". "+series[1],la:"Vertebra "+series[0]+" "+roman(start+i),side:"Orta hat"}));
-    }
-    const ribs = bone.tr.match(/^(\d+)\.–(\d+)\. kaburgalar$/);
-    if (ribs && bone.region === "thorax") {
-      const out=[];
-      for(let n=Number(ribs[1]);n<=Number(ribs[2]);n++) for(const side of ["Sağ","Sol"]) out.push({...bone,tr:n+". kaburga",la:"Costa "+roman(n),side});
-      return out;
-    }
-    const floating = bone.tr.match(/^(\d+)\.–(\d+)\. yüzen kaburgalar$/);
-    if (floating && bone.region === "thorax") {
-      const out=[];
-      for(let n=Number(floating[1]);n<=Number(floating[2]);n++) for(const side of ["Sağ","Sol"]) out.push({...bone,tr:n+". yüzen kaburga",la:"Costa fluctuans "+roman(n),side});
-      return out;
-    }
-    const phalanx = bone.tr.match(/^(II|I)\.?–?(.+)?/);
-    if (bone.count === 8 && /II\.–V\./.test(bone.tr)) {
-      const position = bone.tr.includes("proksimal") ? "proksimal" : bone.tr.includes("orta") ? "orta" : "distal";
-      const latinPosition = bone.la.includes("proximales") ? "proximalis" : bone.la.includes("mediae") ? "media" : "distalis";
-      const foot = bone.la.includes("pedis") ? " pedis" : "";
-      const out=[];
-      for(const digit of ["II","III","IV","V"]) for(const side of ["Sağ","Sol"]) out.push({...bone,tr:side+" "+digit+". parmak "+position+" falanksı",la:"Phalanx "+latinPosition+" digiti "+digit+foot,side});
-      return out;
-    }
-    if (bone.count === 2) return [
-      {...bone,tr:"Sağ "+bone.tr,side:"Sağ"},
-      {...bone,tr:"Sol "+bone.tr,side:"Sol"}
-    ];
-    return [{...bone,side:bone.count>1?"Grup · "+bone.count+" kemik":"Tek kemik"}];
-  }
-  function roman(number) {
-    const values=[[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
-    let result="";
-    for(const [value,symbol] of values) while(number>=value){result+=symbol;number-=value}
-    return result;
-  }
-  const entries=data.bones.flatMap(expand);
+  const entries=data.instances;
   function renderFilters() {
     filterRoot.replaceChildren();
     for(const [id,label] of filters) {
