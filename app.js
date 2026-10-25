@@ -199,5 +199,13 @@
   renderDailyPlan();
     },{once:true});
   }
+  window.addEventListener("storage",event=>{
+    if(event.key===null||event.key==="ftraCompleted"||event.key?.startsWith("ftraCourseCompleted_")){
+      renderCourseProgress();
+    }
+    if(event.key===null||event.key?.startsWith("ftraDailyGoal_")||event.key==="ftraQuizHistory"||event.key==="ftraRecallSchedule"||event.key==="ftraRecallRatings"){
+      renderDailyPlan();
+    }
+  });
   renderDailyPlan();
 })();
