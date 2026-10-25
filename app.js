@@ -142,7 +142,8 @@
     const primary=document.querySelector("#dailyPlanPrimary");
     const complete=document.querySelector("#dailyPlanComplete");
     if(!summary||!detail||!progress||!primary||!complete)return;
-    const now=new Date();\n    const today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+    const now=new Date();
+    const today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
     let history=[],schedule={},ratings={};
     try{const v=JSON.parse(localStorage.getItem("ftraQuizHistory")||"[]");if(Array.isArray(v))history=v;}catch(e){}
     try{const v=JSON.parse(localStorage.getItem("ftraRecallSchedule")||"{}");if(v&&typeof v==="object"&&!Array.isArray(v))schedule=v;}catch(e){}
