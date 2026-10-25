@@ -56,6 +56,18 @@
 <p class="atlas-note">Şemalar kavramı öğrenmeye yönelik sade çizimlerdir; ölçekli anatomik illüstrasyon değildir. Kemik işaretlerini ders kitabı veya laboratuvar modelinde doğrula.</p>
 </section>
 <div id="lessonList"></div></section>
+<section id="boneRecall" class="panel" aria-labelledby="boneRecallTitle" style="margin:18px 0">
+<h3 id="boneRecallTitle">Kemik atlası · Aktif hatırlama</h3>
+<p class="atlas-intro">Bir terimi seç, önce cevabı aklından söyle; sonra yanıtı aç. Bu mini tekrar anatomi testinden bağımsızdır.</p>
+<div class="term-row" id="boneRecallChoices" role="group" aria-label="Kemik grubu seçimi">
+<button class="btn" type="button" data-bone-set="all">Tümü</button><button class="btn" type="button" data-bone-set="axial">Eksen iskeleti</button><button class="btn" type="button" data-bone-set="upper">Üst ekstremite</button><button class="btn" type="button" data-bone-set="lower">Alt ekstremite</button>
+</div>
+<div class="atlas-card" style="margin-top:12px">
+<p id="boneRecallCount" class="muted small">Kart 1</p><h4 id="boneRecallPrompt">Terim yükleniyor…</h4>
+<div id="boneRecallAnswer" hidden><div class="latin" id="boneRecallLatin"></div><p id="boneRecallExplain"></p></div>
+<div class="actions"><button class="btn yellow" id="boneRecallReveal" type="button">Yanıtı göster</button><button class="btn" id="boneRecallNext" type="button">Sonraki kart</button></div>
+</div>
+</section>
 <section id="anatomyRecall" class="recall-tools panel" aria-labelledby="recallTitle">
 <h2 id="recallTitle">Aktif hatırlama kartları</h2>
 <p>Önce cevabı düşün. Kartı açıp kontrol et. Böylece yalnızca okumak yerine bilgiyi hafızandan geri çağırırsın.</p>
@@ -85,6 +97,27 @@
 <p class="footer">Eğitim amaçlıdır; klinik karar veya kişiye özel tanı/tedavi önerisi değildir. Anatomik varyasyonlar ve ders kapsamı için ders kitabı ve öğretim elemanının kaynakları esas alınmalıdır.</p>
 </main>
 <script>
+const boneRecallCards=[
+{set:'axial',front:'Columna vertebralis',back:'Omurga',explain:'Omurların oluşturduğu eksen iskeleti yapısı.'},
+{set:'axial',front:'Sternum',back:'Göğüs kemiği',explain:'Göğüs kafesinin ön bölümünde yer alır.'},
+{set:'axial',front:'Costae',back:'Kaburgalar',explain:'Göğüs kafesinin kemik elemanlarıdır.'},
+{set:'upper',front:'Scapula',back:'Kürek kemiği',explain:'Omuz kuşağının yassı kemiğidir.'},
+{set:'upper',front:'Clavicula',back:'Köprücük kemiği',explain:'Üst ekstremite kemerinin ön bölümünde uzanır.'},
+{set:'upper',front:'Humerus',back:'Kol kemiği',explain:'Omuz ile dirsek arasında uzanan uzun kemik.'},
+{set:'upper',front:'Radius',back:'Ön kol kemiği; anatomik pozisyonda başparmak tarafında',explain:'Ön kolun lateral kemiğidir.'},
+{set:'upper',front:'Ulna',back:'Ön kol kemiği; anatomik pozisyonda küçük parmak tarafında',explain:'Ön kolun medial kemiğidir.'},
+{set:'upper',front:'Ossa carpi',back:'El bileği kemikleri',explain:'El bileği bölgesindeki küçük kemikler grubudur.'},
+{set:'lower',front:'Femur',back:'Uyluk kemiği',explain:'Kalça ve diz eklemleriyle ilişkilidir.'},
+{set:'lower',front:'Patella',back:'Diz kapağı',explain:'Diz önünde bulunan sesamoid kemiktir.'},
+{set:'lower',front:'Tibia',back:'Kaval kemiği',explain:'Bacağın medialinde yer alan, yük taşımada önemli kemik.'},
+{set:'lower',front:'Fibula',back:'Kamış kemiği',explain:'Bacağın lateralinde yer alır; tibia ile aynı büyüklükte değildir.'},
+{set:'lower',front:'Ossa tarsi',back:'Ayak bileği kemikleri',explain:'Ayak iskeletinin arka bölümündeki kemik grubudur.'}
+];
+let boneRecallSet='all',boneRecallIndex=0,boneRecallPool=[...boneRecallCards];
+function renderBoneRecall(){boneRecallPool=boneRecallSet==='all'?[...boneRecallCards]:boneRecallCards.filter(card=>card.set===boneRecallSet);if(boneRecallIndex>=boneRecallPool.length)boneRecallIndex=0;const card=boneRecallPool[boneRecallIndex];document.getElementById('boneRecallCount').textContent='Kart '+(boneRecallIndex+1)+' / '+boneRecallPool.length;document.getElementById('boneRecallPrompt').textContent=card.front;document.getElementById('boneRecallLatin').textContent=card.back;document.getElementById('boneRecallExplain').textContent=card.explain;document.getElementById('boneRecallAnswer').hidden=true;document.getElementById('boneRecallReveal').textContent='Yanıtı göster'}
+document.querySelectorAll('[data-bone-set]').forEach(button=>button.addEventListener('click',()=>{boneRecallSet=button.dataset.boneSet;boneRecallIndex=0;renderBoneRecall()}));
+document.getElementById('boneRecallReveal').addEventListener('click',()=>{const answer=document.getElementById('boneRecallAnswer');answer.hidden=!answer.hidden;document.getElementById('boneRecallReveal').textContent=answer.hidden?'Yanıtı göster':'Yanıtı gizle'});
+document.getElementById('boneRecallNext').addEventListener('click',()=>{boneRecallIndex=(boneRecallIndex+1)%boneRecallPool.length;renderBoneRecall()});
 const lessons=[
 {id:'l1',title:'1. Anatomik dil ve anatomik pozisyon',time:'8 dk',body:'Anatomik adlandırma, yapıları kişiden kişiye değişen gündelik ifadeler yerine standart bir konuma göre tarif eder. Anatomik pozisyonda kişi dik durur; baş ve gözler öne bakar, üst ekstremiteler gövde yanında, avuç içleri öne dönüktür, ayaklar öne yönelir.',key:'Sağ ve sol, her zaman incelenen kişinin sağ ve soludur; karşıdan bakan gözlemcinin değil.',steps:['Superior / cranialis: başa doğru','Inferior / caudalis: ayaklara doğru','Anterior / ventralis: ön tarafa','Posterior / dorsalis: arka tarafa','Medialis: orta hatta yakın; lateralis: orta hattan uzak','Proximalis: gövdeye veya başlangıç noktasına yakın; distalis: uzak'],clinical:'FTR bağlantısı: Eklem hareketini veya ağrının yerini kaydederken standart yön terimleri yanlış anlaşılmayı azaltır.'},
 {id:'l2',title:'2. İskelet sistemi ve kemiklerin görevleri',time:'10 dk',body:'İskelet sistemi vücuda destek verir, hayati organları korur ve kaslarla birlikte hareketi sağlar. Kemik dokusu aynı zamanda mineral deposudur; kemik iliği kan hücrelerinin yapımında rol alabilir.',key:'Erişkin iskeleti genellikle 206 kemik olarak öğretilir; bireysel farklılıklar ve kemiklerin sayılma biçimi nedeniyle varyasyon olabilir.',steps:['Axial skeleton / iskeletin eksen bölümü: kafatası, omurga, göğüs kafesi','Appendicular skeleton / üyeler iskeleti: üst-alt ekstremiteler ve kemerleri','Uzun kemik örneği: femur (uyluk kemiği)','Düz kemik örneği: sternum (göğüs kemiği)','Düzensiz kemik örneği: vertebra (omur)'],clinical:'FTR bağlantısı: Kemik şekli, eklem yüzeylerini ve kasların kuvvet aktarımını etkiler.'},
