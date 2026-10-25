@@ -143,3 +143,15 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline-color:#168ba2}
 .course-card-body>small{color:#55748d;font-weight:700;letter-spacing:.01em}
 .course-card:hover .course-art{filter:saturate(1.08)}
 @media(prefers-reduced-motion:reduce){.course-card,.course-art,.lower-panel{transition:none!important}}
+
+
+/* Daily study plan */
+.daily-plan-card{align-items:flex-start;max-width:100%}
+.daily-plan-card>div{min-width:0;flex:1}
+.daily-plan-card .mini-progress{overflow:hidden}
+.daily-plan-card .mini-progress span{display:block;width:0;height:100%;transition:width .2s ease}
+.daily-plan-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem;margin-top:.85rem}
+.daily-plan-actions .text-link{font-weight:800}
+.daily-plan-complete{border:1px solid #c4d8e4;border-radius:999px;padding:.5rem .75rem;background:#fff;color:#18354b;font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}
+.daily-plan-complete:disabled{opacity:.75;cursor:default;background:#e8f5f1;border-color:#b9dfd2}
+@media(max-width:560px){.daily-plan-actions{align-items:flex-start;flex-direction:column}.daily-plan-complete{white-space:normal;text-align:left}}
