@@ -1,0 +1,85 @@
+name: Static site checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - redesign/home-dashboard
+
+jobs:
+  syntax-and-markup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check JavaScript files
+        run: |
+          node --check app.js
+          node --check data.js
+
+      - name: Check inline JavaScript in dersler.html
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const html = fs.readFileSync('dersler.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+          let checked = 0;
+          for (const [, attrs, body] of scripts) {
+            if (/\bsrc\s*=/.test(attrs) || !body.trim()) continue;
+            new vm.Script(body, { filename: `dersler.html:inline-script-${++checked}.js` });
+          }
+          if (!checked) {
+            console.error('No inline JavaScript blocks were found.');
+            process.exit(1);
+          }
+          console.log(`Syntax OK: ${checked} inline script block(s).`);
+          NODE
+
+      - name: Check duplicate HTML IDs on the home page
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const ids = [...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)].map(m => m[1]);
+          const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+          if (duplicates.length) {
+            console.error('Duplicate IDs:', [...new Set(duplicates)].join(', '));
+            process.exit(1);
+          }
+          console.log(`HTML ID check OK: ${ids.length} unique ID(s).`);
+          NODE
+
+      - name: Check home-page selectors and lesson links
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const home = fs.readFileSync('index.html', 'utf8');
+          const app = fs.readFileSync('app.js', 'utf8');
+          const lessons = fs.readFileSync('dersler.html', 'utf8');
+          const homeIds = new Set([...home.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)].map(m => m[1]));
+          const lessonIds = new Set([...lessons.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)].map(m => m[1]));
+          const selectors = [...app.matchAll(/querySelector(?:All)?\(["']#([^"']+)["']/g)].map(m => m[1]);
+          const missingSelectors = [...new Set(selectors)].filter(id => !homeIds.has(id));
+          if (missingSelectors.length) {
+            console.error('Home-page elements referenced by app.js are missing:', missingSelectors.join(', '));
+            process.exit(1);
+          }
+
+          const courseKeys = new Set([...lessons.matchAll(/showCourse\(['"]([^'"]+)['"]\)/g)].map(m => m[1]));
+          const lessonTargets = [...home.matchAll(/href=["']dersler\.html#([^"']+)["']/g)].map(m => m[1]);
+          const missingLessonTargets = [...new Set(lessonTargets)].filter(target => !lessonIds.has(target) && !courseKeys.has(target));
+          if (missingLessonTargets.length) {
+            console.error('Home-page lesson links have no matching section or course:', missingLessonTargets.join(', '));
+            process.exit(1);
+          }
+
+          console.log(`Reference check OK: ${new Set(selectors).size} app selectors and ${new Set(lessonTargets).size} lesson links.`);
+          NODE
