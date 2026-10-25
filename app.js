@@ -134,4 +134,41 @@
   next.addEventListener("click", () => { index++; renderQuestion(); });
   document.querySelector("#restart-quiz").addEventListener("click", () => startQuiz());
   document.querySelector("#retry-wrong").addEventListener("click", () => startQuiz(true));
+
+  function renderDailyPlan(){
+    const summary=document.querySelector("#dailyPlanSummary");
+    const detail=document.querySelector("#dailyPlanDetail");
+    const progress=document.querySelector("#dailyPlanProgress");
+    const primary=document.querySelector("#dailyPlanPrimary");
+    const complete=document.querySelector("#dailyPlanComplete");
+    if(!summary||!detail||!progress||!primary||!complete)return;
+    const today=new Date().toISOString().slice(0,10);
+    let history=[],schedule={},ratings={};
+    try{const v=JSON.parse(localStorage.getItem("ftraQuizHistory")||"[]");if(Array.isArray(v))history=v;}catch(e){}
+    try{const v=JSON.parse(localStorage.getItem("ftraRecallSchedule")||"{}");if(v&&typeof v==="object"&&!Array.isArray(v))schedule=v;}catch(e){}
+    try{const v=JSON.parse(localStorage.getItem("ftraRecallRatings")||"{}");if(v&&typeof v==="object"&&!Array.isArray(v))ratings=v;}catch(e){}
+    const due=Object.values(schedule).filter(item=>item&&typeof item.due==="string"&&item.due<=today).length;
+    const latest=history.length?history[history.length-1]:null;
+    const names={direction:"Anatomik pozisyon ve yönler",bones:"Kemikler ve iskelet",joints:"Eklem sınıflandırması",muscle:"Kas ve hareket terimleri",nervous:"Sinir sistemi"};
+    let weak=null;
+    if(latest&&Array.isArray(latest.topics)){
+      const topics=latest.topics.filter(t=>t&&names[t.key]&&Number.isFinite(t.correct)&&Number.isFinite(t.total)&&t.total>0);
+      if(topics.length){weak=topics.reduce((a,b)=>a.correct/a.total<=b.correct/b.total?a:b);}
+    }
+    let done=false;
+    try{done=localStorage.getItem("ftraDailyGoal_"+today)==="done"}catch(e){}
+    summary.textContent=done?"Bugünkü 15 dakikalık hedef tamamlandı.":due>0?due+" tekrar kartı seni bekliyor.":weak?"Öncelik: "+names[weak.key]+".":"15 dakikalık bir çalışma seç.";
+    detail.textContent=due>0?"Öneri: tekrar kartlarını gözden geçir.":weak?"Son testindeki bu konuya odaklan.":"Ders seç, kısa bir tekrar yap ve mini test çöz.";
+    progress.style.width=done?"100%":due>0?"25%":weak?"15%":"0%";
+    progress.parentElement?.setAttribute("aria-label",done?"Günlük hedef tamamlandı":"Günlük çalışma planı");
+    primary.href=due>0?"dersler.html#boneRecall":weak?"dersler.html#quiz":"dersler.html";
+    primary.textContent=due>0?"Tekrar kartlarına git":weak?"Eksik konuyu çalış":"Derslere git";
+    complete.textContent=done?"Hedef tamamlandı":"Bugünkü hedefi tamamladım";
+    complete.disabled=done;
+    complete.addEventListener("click",()=>{
+      try{localStorage.setItem("ftraDailyGoal_"+today,"done")}catch(e){}
+      renderDailyPlan();
+    },{once:true});
+  }
+  renderDailyPlan();
 })();
