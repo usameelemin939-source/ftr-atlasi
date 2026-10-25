@@ -127,14 +127,28 @@ function showCourse(course){
  const data=starterCourses[course];if(!data)return;
  heading.textContent=data.title;
  area.querySelector(':scope > p').textContent=data.intro;
- document.getElementById('lessonList').innerHTML=data.items.map((item,i)=>'<article class="lesson"><span class="pill">Temel konu '+(i+1)+' / '+data.items.length+'</span><h3>'+item[0]+'</h3><p>'+item[1]+'</p><div class="key"><strong>Hatırla:</strong> '+item[2]+'</div></article>').join('')+
- '<section class="course-mini-quiz" aria-labelledby="courseMiniTitle"><h3 id="courseMiniTitle">Kendini dene</h3><p>'+data.quiz.q+'</p><div class="mini-options">'+data.quiz.a.map((answer,i)=>'<button type="button" data-course-answer="'+i+'">'+answer+'</button>').join('')+'</div><p class="mini-result" id="courseMiniResult" aria-live="polite"></p></section>';
+ const progressKey='ftraCourseCompleted_'+course;
+ let courseDone=new Set();
+ try{const saved=JSON.parse(localStorage.getItem(progressKey)||'[]');if(Array.isArray(saved))courseDone=new Set(saved.filter(n=>Number.isInteger(n)&&n>=0&&n<data.items.length))}catch(error){}
+ document.getElementById('lessonList').innerHTML='<p class="muted small" id="courseProgressText">'+courseDone.size+' / '+data.items.length+' konu tamamlandı · bu cihazda saklanır</p><div class="progressline"><span id="courseProgressBar" style="width:'+(courseDone.size/data.items.length*100)+'%"></span></div>'+data.items.map((item,i)=>'<article class="lesson"><span class="pill">Temel konu '+(i+1)+' / '+data.items.length+'</span><h3>'+item[0]+'</h3><p>'+item[1]+'</p><div class="key"><strong>Hatırla:</strong> '+item[2]+'</div><div class="actions"><button type="button" class="btn '+(courseDone.has(i)?'yellow':'')+'" data-course-done="'+i+'">'+(courseDone.has(i)?'Tamamlandı · geri al':'Konuyu tamamladım')+'</button></div></article>').join('')+
+ '<section class="course-mini-quiz" aria-labelledby="courseMiniTitle"><h3 id="courseMiniTitle">Kendini dene</h3><p>'+data.quiz.q+'</p><div class="mini-options">'+data.quiz.a.map((answer,i)=>'<button type="button" data-course-answer="'+i+'">'+answer+'</button>').join('')+'</div><p class="mini-result" id="courseMiniResult" aria-live="polite"></p><button type="button" class="btn" id="courseMiniReset">Soruyu yeniden dene</button></section>';
+ document.querySelectorAll('[data-course-done]').forEach(button=>button.addEventListener('click',()=>{
+   const index=Number(button.dataset.courseDone);
+   courseDone.has(index)?courseDone.delete(index):courseDone.add(index);
+   try{localStorage.setItem(progressKey,JSON.stringify([...courseDone]))}catch(error){}
+   showCourse(course);
+ }));
  document.querySelectorAll('[data-course-answer]').forEach(button=>button.addEventListener('click',()=>{
    const result=document.getElementById('courseMiniResult');
    const correct=Number(button.dataset.courseAnswer)===data.quiz.c;
-   result.textContent=(correct?'Doğru. ':'Tekrar dene. ')+data.quiz.e;
-   document.querySelectorAll('[data-course-answer]').forEach(option=>{option.disabled=true;if(Number(option.dataset.courseAnswer)===data.quiz.c)option.style.borderColor='#23834b';});
+   result.textContent=correct?'Doğru. '+data.quiz.e:'Henüz değil. Bir daha dene.';
+   result.style.color=correct?'#187344':'#9a4b12';
+   if(correct){document.querySelectorAll('[data-course-answer]').forEach(option=>{option.disabled=true;if(Number(option.dataset.courseAnswer)===data.quiz.c)option.style.borderColor='#23834b';});}
  }));
+ document.getElementById('courseMiniReset').addEventListener('click',()=>{
+   document.querySelectorAll('[data-course-answer]').forEach(option=>{option.disabled=false;option.style.borderColor='';});
+   const result=document.getElementById('courseMiniResult');result.textContent='';result.style.color='';
+ });
 }
 
 const requestedCourse=location.hash.slice(1);if(['fizyoloji','terminoloji','ftr','psikososyal','finans'].includes(requestedCourse)){showCourse(requestedCourse)}
