@@ -173,10 +173,10 @@ function paintSavedWrongStatus(){const count=readSavedWrong().length;const el=do
 document.getElementById('savedWrongStart').addEventListener('click',()=>{const bank=readSavedWrong();if(!bank.length){document.getElementById('savedWrongStatus').textContent='Henüz kayıtlı yanlış soru yok. Testte yanlış yaptığın sorular burada birikir.';return}quizRunData=bank;wrongQuestions=[];currentQuiz=0;score=0;answered=false;renderQuiz()});
 document.getElementById('savedWrongClear').addEventListener('click',()=>{try{localStorage.removeItem('ftraAnatomyWrongBank')}catch(error){}paintSavedWrongStatus();document.getElementById('savedWrongStatus').textContent='Kayıtlı yanlış soru listesi temizlendi.'});
 const quizTopics={
-direction:[0,1,4,8,13],
-bones:[2,5,6,7,9,16,17,21,22],
-joints:[3,10,18,23],
-muscle:[11,12,18,19,20,24],
+direction:[0,1,4,8,12],
+bones:[2,5,6,7,9,10,13,14,15,16,17,22,23],
+joints:[3],
+muscle:[11,18,19,24],
 nervous:[20,21]
 };
 function getQuizForSelectedTopic(){
@@ -185,6 +185,16 @@ function getQuizForSelectedTopic(){
  const indexes=quizTopics[topic]||[];
  return indexes.map(i=>quizData[i]).filter(Boolean);
 }
+function updateQuizTopicCounts(){
+ const select=document.getElementById('quizTopic');
+ if(!select)return;
+ const labels={all:'Tüm konular',direction:'Anatomik pozisyon ve yönler',bones:'Kemikler ve iskelet',joints:'Eklem sınıflandırması',muscle:'Kas ve hareket terimleri',nervous:'Sinir sistemi'};
+ [...select.options].forEach(option=>{
+  const count=option.value==='all'?quizData.length:(quizTopics[option.value]||[]).filter(i=>quizData[i]).length;
+  option.textContent=labels[option.value]+' · '+count+' soru';
+ });
+}
+updateQuizTopicCounts();
 document.getElementById('quizTopic').addEventListener('change',()=>{
  quizRunData=getQuizForSelectedTopic();wrongQuestions=[];currentQuiz=0;score=0;answered=false;
  const topic=document.getElementById('quizTopic');
