@@ -58,14 +58,14 @@
 <div id="lessonList"></div></section>
 <section id="boneRecall" class="panel" aria-labelledby="boneRecallTitle" style="margin:18px 0">
 <h3 id="boneRecallTitle">Anatomi terimleri · Aktif hatırlama</h3>
-<p class="atlas-intro">Önce Türkçe karşılığı veya yapıyı aklından söyle, ardından yanıtı aç. Kemik, eklem, kas ve sinir sistemi kartlarını ayrı ayrı çalış.</p>
+<p class="atlas-intro">Önce yanıtı aklından söyle. Kartı açtıktan sonra “Biliyordum” veya “Tekrar et” seç; ilerlemen bu cihazda kaydedilir.</p>
 <div class="term-row" id="boneRecallChoices" role="group" aria-label="Kemik grubu seçimi">
 <button class="btn" type="button" data-bone-set="all">Tümü</button><button class="btn" type="button" data-bone-set="axial">Eksen iskeleti</button><button class="btn" type="button" data-bone-set="upper">Üst ekstremite</button><button class="btn" type="button" data-bone-set="lower">Alt ekstremite</button><button class="btn" type="button" data-bone-set="joints">Eklemler</button><button class="btn" type="button" data-bone-set="muscle">Kaslar</button><button class="btn" type="button" data-bone-set="nervous">Sinir sistemi</button>
 </div>
 <div class="atlas-card" style="margin-top:12px">
 <p id="boneRecallCount" class="muted small">Kart 1</p><h4 id="boneRecallPrompt">Terim yükleniyor…</h4>
 <div id="boneRecallAnswer" hidden><div class="latin" id="boneRecallLatin"></div><p id="boneRecallExplain"></p></div>
-<div class="actions"><button class="btn yellow" id="boneRecallReveal" type="button">Yanıtı göster</button><button class="btn" id="boneRecallNext" type="button">Sonraki kart</button></div>
+<div class="actions"><button class="btn yellow" id="boneRecallReveal" type="button">Yanıtı göster</button><button class="btn" id="boneRecallKnown" type="button" disabled>Biliyordum</button><button class="btn" id="boneRecallAgain" type="button" disabled>Tekrar et</button><button class="btn" id="boneRecallNext" type="button">Sonraki kart</button></div><p id="boneRecallProgress" class="muted small" aria-live="polite"></p>
 </div>
 </section>
 <section id="anatomyRecall" class="recall-tools panel" aria-labelledby="recallTitle">
@@ -123,10 +123,17 @@ const boneRecallCards=[
 {set:'nervous',front:'Systema nervosum centrale',back:'Merkezi sinir sistemi',explain:'Beyin ve omurilikten oluşur.'},
 {set:'nervous',front:'Nervus femoralis',back:'Femoral sinir',explain:'Uyluğun ön bölgesindeki bazı kasların motor innervasyonunda ve duyuda rol alır.'},
 {set:'nervous',front:'Afferens',back:'Merkeze doğru bilgi taşıyan',explain:'Duyusal bilgi çoğunlukla periferiden merkezi sinir sistemine iletilir.'}];
-let boneRecallSet='all',boneRecallIndex=0,boneRecallPool=[...boneRecallCards];
-function renderBoneRecall(){boneRecallPool=boneRecallSet==='all'?[...boneRecallCards]:boneRecallCards.filter(card=>card.set===boneRecallSet);if(boneRecallIndex>=boneRecallPool.length)boneRecallIndex=0;const card=boneRecallPool[boneRecallIndex];document.getElementById('boneRecallCount').textContent='Kart '+(boneRecallIndex+1)+' / '+boneRecallPool.length;document.getElementById('boneRecallPrompt').textContent=card.front;document.getElementById('boneRecallLatin').textContent=card.back;document.getElementById('boneRecallExplain').textContent=card.explain;document.getElementById('boneRecallAnswer').hidden=true;document.getElementById('boneRecallReveal').textContent='Yanıtı göster'}
+let boneRecallSet='all',boneRecallIndex=0,boneRecallPool=[...boneRecallCards],boneRecallRatings={};
+try{const saved=JSON.parse(localStorage.getItem('ftraRecallRatings')||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))boneRecallRatings=saved}catch(error){}
+function saveRecallRatings(){try{localStorage.setItem('ftraRecallRatings',JSON.stringify(boneRecallRatings))}catch(error){}}
+function getRecallStats(){const ids=new Set(boneRecallCards.map(card=>card.front));const ratings=Object.entries(boneRecallRatings).filter(([id,value])=>ids.has(id)&&(value==='known'||value==='again'));return {known:ratings.filter(([,v])=>v==='known').length,again:ratings.filter(([,v])=>v==='again').length,total:boneRecallCards.length}}
+function renderRecallProgress(){const stats=getRecallStats();const el=document.getElementById('boneRecallProgress');if(el)el.textContent='Bildiğin: '+stats.known+' · Tekrar edeceğin: '+stats.again+' · Kart sayısı: '+stats.total}
+function renderBoneRecall(){boneRecallPool=boneRecallSet==='all'?[...boneRecallCards]:boneRecallCards.filter(card=>card.set===boneRecallSet);if(boneRecallIndex>=boneRecallPool.length)boneRecallIndex=0;const card=boneRecallPool[boneRecallIndex];document.getElementById('boneRecallCount').textContent='Kart '+(boneRecallIndex+1)+' / '+boneRecallPool.length;document.getElementById('boneRecallPrompt').textContent=card.front;document.getElementById('boneRecallLatin').textContent=card.back;document.getElementById('boneRecallExplain').textContent=card.explain;document.getElementById('boneRecallAnswer').hidden=true;document.getElementById('boneRecallReveal').textContent='Yanıtı göster';document.getElementById('boneRecallKnown').disabled=true;document.getElementById('boneRecallAgain').disabled=true;renderRecallProgress()}
 document.querySelectorAll('[data-bone-set]').forEach(button=>button.addEventListener('click',()=>{boneRecallSet=button.dataset.boneSet;boneRecallIndex=0;renderBoneRecall()}));
-document.getElementById('boneRecallReveal').addEventListener('click',()=>{const answer=document.getElementById('boneRecallAnswer');answer.hidden=!answer.hidden;document.getElementById('boneRecallReveal').textContent=answer.hidden?'Yanıtı göster':'Yanıtı gizle'});
+document.getElementById('boneRecallReveal').addEventListener('click',()=>{const answer=document.getElementById('boneRecallAnswer');answer.hidden=!answer.hidden;document.getElementById('boneRecallReveal').textContent=answer.hidden?'Yanıtı göster':'Yanıtı gizle';document.getElementById('boneRecallKnown').disabled=answer.hidden;document.getElementById('boneRecallAgain').disabled=answer.hidden});
+function rateRecall(value){const card=boneRecallPool[boneRecallIndex];boneRecallRatings[card.front]=value;saveRecallRatings();renderRecallProgress();boneRecallIndex=(boneRecallIndex+1)%boneRecallPool.length;renderBoneRecall()}
+document.getElementById('boneRecallKnown').addEventListener('click',()=>rateRecall('known'));
+document.getElementById('boneRecallAgain').addEventListener('click',()=>rateRecall('again'));
 document.getElementById('boneRecallNext').addEventListener('click',()=>{boneRecallIndex=(boneRecallIndex+1)%boneRecallPool.length;renderBoneRecall()});
 const lessons=[
 {id:'l1',title:'1. Anatomik dil ve anatomik pozisyon',time:'8 dk',body:'Anatomik adlandırma, yapıları kişiden kişiye değişen gündelik ifadeler yerine standart bir konuma göre tarif eder. Anatomik pozisyonda kişi dik durur; baş ve gözler öne bakar, üst ekstremiteler gövde yanında, avuç içleri öne dönüktür, ayaklar öne yönelir.',key:'Sağ ve sol, her zaman incelenen kişinin sağ ve soludur; karşıdan bakan gözlemcinin değil.',steps:['Superior / cranialis: başa doğru','Inferior / caudalis: ayaklara doğru','Anterior / ventralis: ön tarafa','Posterior / dorsalis: arka tarafa','Medialis: orta hatta yakın; lateralis: orta hattan uzak','Proximalis: gövdeye veya başlangıç noktasına yakın; distalis: uzak'],clinical:'FTR bağlantısı: Eklem hareketini veya ağrının yerini kaydederken standart yön terimleri yanlış anlaşılmayı azaltır.'},
