@@ -135,6 +135,29 @@
   document.querySelector("#restart-quiz").addEventListener("click", () => startQuiz());
   document.querySelector("#retry-wrong").addEventListener("click", () => startQuiz(true));
 
+  function renderCourseProgress(){
+    document.querySelectorAll("[data-course-progress][data-course-total]").forEach(card=>{
+      const course=card.dataset.courseProgress;
+      const total=Number(card.dataset.courseTotal);
+      const bar=card.querySelector(".course-progress span");
+      const label=card.querySelector(".course-card-body small");
+      if(!course||!Number.isInteger(total)||total<1||!bar||!label)return;
+      let completed=new Set();
+      try{
+        const saved=JSON.parse(localStorage.getItem("ftraCourseCompleted_"+course)||"[]");
+        if(Array.isArray(saved))completed=new Set(saved.filter(i=>Number.isInteger(i)&&i>=0&&i<total));
+      }catch(error){}
+      const count=completed.size;
+      const percent=Math.round(count/total*100);
+      bar.style.width=percent+"%";
+      bar.setAttribute("role","progressbar");
+      bar.setAttribute("aria-valuemin","0");
+      bar.setAttribute("aria-valuemax",String(total));
+      bar.setAttribute("aria-valuenow",String(count));
+      bar.setAttribute("aria-label",count+" / "+total+" konu tamamlandı");
+      label.textContent=count===0?"Henüz konu tamamlanmadı":count===total?"Tüm konular tamamlandı":count+" / "+total+" konu tamamlandı";
+    });
+  }
   function renderDailyPlan(){
     const summary=document.querySelector("#dailyPlanSummary");
     const detail=document.querySelector("#dailyPlanDetail");
@@ -168,7 +191,8 @@
     complete.disabled=done;
     complete.addEventListener("click",()=>{
       try{localStorage.setItem("ftraDailyGoal_"+today,"done")}catch(e){}
-      renderDailyPlan();
+      renderCourseProgress();
+  renderDailyPlan();
     },{once:true});
   }
   renderDailyPlan();
