@@ -98,6 +98,7 @@
 <h3 id="quizHistoryTitle">Öğrenme geçmişim</h3>
 <p class="muted small">Son 20 test denemen bu cihazda saklanır.</p>
 <div class="grid" id="quizHistoryStats" aria-live="polite"></div>
+<div id="quizHistoryTopics" class="grid" aria-live="polite"></div>
 <ul id="quizHistoryList" class="steps"></ul>
 <div class="actions"><button class="btn" id="quizHistoryClear" type="button">Test geçmişini temizle</button></div>
 <p id="quizHistoryMessage" class="muted small" aria-live="polite"></p>
@@ -246,10 +247,12 @@ function renderQuizHistoryDashboard(){
  const history=getQuizHistory();
  const stats=document.getElementById('quizHistoryStats');
  const list=document.getElementById('quizHistoryList');
- if(!stats||!list)return;
+ const topicRoot=document.getElementById('quizHistoryTopics');
+ if(!stats||!list||!topicRoot)return;
  const latest=history[history.length-1];
  const best=history.reduce((max,item)=>Math.max(max,item.total>0?item.score/item.total*100:0),0);
  const latestPct=latest&&latest.total?Math.round(latest.score/latest.total*100):0;
+ const topicNames={direction:'Anatomik pozisyon ve yönler',bones:'Kemikler ve iskelet',joints:'Eklem sınıflandırması',muscle:'Kas ve hareket terimleri',nervous:'Sinir sistemi'};
  stats.replaceChildren();
  [[String(history.length),'Kayıtlı test'],[latest?latestPct+'%':'—','Son sonuç'],[history.length?Math.round(best)+'%':'—','En iyi oran']].forEach(([value,label])=>{
   const card=document.createElement('div');card.className='atlas-card';
@@ -257,6 +260,23 @@ function renderQuizHistoryDashboard(){
   const p=document.createElement('p');p.className='muted small';p.textContent=label;
   card.append(strong,p);stats.append(card);
  });
+ topicRoot.replaceChildren();
+ const topics=latest&&Array.isArray(latest.topics)?latest.topics.filter(item=>item&&topicNames[item.key]&&Number.isFinite(item.correct)&&Number.isFinite(item.total)&&item.total>0):[];
+ if(!topics.length){
+  const empty=document.createElement('p');empty.className='muted small';empty.textContent=history.length?'Son testte konu bazlı sonuç bulunamadı.':'Testi tamamladığında konu bazlı başarıların burada görünecek.';topicRoot.append(empty);
+ }else{
+  const weakest=topics.reduce((low,item)=>item.correct/item.total<low.correct/low.total?item:low,topics[0]);
+  const heading=document.createElement('h4');heading.textContent='Son testte konu bazlı başarı';topicRoot.append(heading);
+  topics.forEach(item=>{
+   const pct=Math.round(item.correct/item.total*100);
+   const card=document.createElement('div');card.className='atlas-card';
+   const title=document.createElement('strong');title.textContent=topicNames[item.key];
+   const detail=document.createElement('p');detail.className='muted small';detail.textContent=item.correct+' / '+item.total+' doğru ('+pct+'%)';
+   card.append(title,detail);
+   if(item.key===weakest.key){const note=document.createElement('p');note.className='muted small';note.textContent='Bu denemedeki en çok tekrar gerektiren konu.';card.append(note)}
+   topicRoot.append(card);
+  });
+ }
  list.replaceChildren();
  if(!history.length){const li=document.createElement('li');li.textContent='Henüz test geçmişi yok. İlk testi bitirdiğinde burada görünecek.';list.append(li);return}
  history.slice(-5).reverse().forEach(item=>{
