@@ -189,7 +189,7 @@
     detail.textContent=due>0?"Öneri: tekrar kartlarını gözden geçir.":weak?"Son testindeki bu konuya odaklan.":"Ders seç, kısa bir tekrar yap ve mini test çöz.";
     progress.style.width=done?"100%":due>0?"25%":weak?"15%":"0%";
     progress.parentElement?.setAttribute("aria-label",done?"Günlük hedef tamamlandı":"Günlük çalışma planı");
-    primary.href=due>0?"dersler.html#boneRecall":weak?"dersler.html#quiz":"dersler.html";
+    primary.href=due>0?"dersler.html#boneRecall":weak?"dersler.html?topic="+encodeURIComponent(weak.key)+"#quiz":"dersler.html";
     primary.textContent=due>0?"Tekrar kartlarına git":weak?"Eksik konuyu çalış":"Derslere git";
     complete.textContent=done?"Hedef tamamlandı":"Bugünkü hedefi tamamladım";
     complete.disabled=done;
