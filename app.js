@@ -144,8 +144,12 @@
       if(!course||!Number.isInteger(total)||total<1||!bar||!label)return;
       let completed=new Set();
       try{
-        const saved=JSON.parse(localStorage.getItem("ftraCourseCompleted_"+course)||"[]");
-        if(Array.isArray(saved))completed=new Set(saved.filter(i=>Number.isInteger(i)&&i>=0&&i<total));
+        const storageKey=course==="anatomi"?"ftraCompleted":"ftraCourseCompleted_"+course;
+        const saved=JSON.parse(localStorage.getItem(storageKey)||"[]");
+        if(Array.isArray(saved)){
+          if(course==="anatomi")completed=new Set(saved.filter(id=>typeof id==="string"&&/^l(?:[1-9]|10)$/.test(id)));
+          else completed=new Set(saved.filter(i=>Number.isInteger(i)&&i>=0&&i<total));
+        }
       }catch(error){}
       const count=completed.size;
       const percent=Math.round(count/total*100);
