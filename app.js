@@ -193,11 +193,11 @@
     primary.textContent=due>0?"Tekrar kartlarına git":weak?"Eksik konuyu çalış":"Derslere git";
     complete.textContent=done?"Hedef tamamlandı":"Bugünkü hedefi tamamladım";
     complete.disabled=done;
-    complete.addEventListener("click",()=>{
+    complete.onclick=()=>{
       try{localStorage.setItem("ftraDailyGoal_"+today,"done")}catch(e){}
       renderCourseProgress();
-  renderDailyPlan();
-    },{once:true});
+      renderDailyPlan();
+    };
   }
   window.addEventListener("storage",event=>{
     if(event.key===null||event.key==="ftraCompleted"||event.key?.startsWith("ftraCourseCompleted_")){
