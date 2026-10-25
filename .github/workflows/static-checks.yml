@@ -56,3 +56,30 @@ jobs:
           }
           console.log(`HTML ID check OK: ${ids.length} unique ID(s).`);
           NODE
+
+      - name: Check home-page selectors and lesson links
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const home = fs.readFileSync('index.html', 'utf8');
+          const app = fs.readFileSync('app.js', 'utf8');
+          const lessons = fs.readFileSync('dersler.html', 'utf8');
+          const homeIds = new Set([...home.matchAll(/\\bid\\s*=\\s*["']([^"']+)["']/g)].map(m => m[1]));
+          const lessonIds = new Set([...lessons.matchAll(/\\bid\\s*=\\s*["']([^"']+)["']/g)].map(m => m[1]));
+          const selectors = [...app.matchAll(/querySelector(?:All)?\\(["']#([^"']+)["']/g)].map(m => m[1]);
+          const missingSelectors = [...new Set(selectors)].filter(id => !homeIds.has(id));
+          if (missingSelectors.length) {
+            console.error('Home-page elements referenced by app.js are missing:', missingSelectors.join(', '));
+            process.exit(1);
+          }
+
+          const courseKeys = new Set([...lessons.matchAll(/showCourse\\(['"]([^'"]+)['"]\\)/g)].map(m => m[1]));
+          const lessonTargets = [...home.matchAll(/href=["']dersler\\.html#([^"']+)["']/g)].map(m => m[1]);
+          const missingLessonTargets = [...new Set(lessonTargets)].filter(target => !lessonIds.has(target) && !courseKeys.has(target));
+          if (missingLessonTargets.length) {
+            console.error('Home-page lesson links have no matching section or course:', missingLessonTargets.join(', '));
+            process.exit(1);
+          }
+
+          console.log(`Reference check OK: ${new Set(selectors).size} app selectors and ${new Set(lessonTargets).size} lesson links.`);
+          NODE
