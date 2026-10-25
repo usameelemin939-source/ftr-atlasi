@@ -93,7 +93,16 @@
 <option value="muscle">Kas ve hareket terimleri</option>
 <option value="nervous">Sinir sistemi</option>
 </select>
-<div id="quiz"></div><div class="actions"><button class="btn yellow" id="quizReset">Testi yeniden başlat</button><button class="btn" id="savedWrongStart" type="button">Kayıtlı yanlışları çöz</button><button class="btn" id="savedWrongClear" type="button">Yanlış listesini temizle</button></div><p id="savedWrongStatus" class="muted small" aria-live="polite"></p></section>
+<div id="quiz"></div>
+<section class="mini-check" aria-labelledby="quizHistoryTitle">
+<h3 id="quizHistoryTitle">Öğrenme geçmişim</h3>
+<p class="muted small">Son 20 test denemen bu cihazda saklanır.</p>
+<div class="grid" id="quizHistoryStats" aria-live="polite"></div>
+<ul id="quizHistoryList" class="steps"></ul>
+<div class="actions"><button class="btn" id="quizHistoryClear" type="button">Test geçmişini temizle</button></div>
+<p id="quizHistoryMessage" class="muted small" aria-live="polite"></p>
+</section>
+<div class="actions"><button class="btn yellow" id="quizReset">Testi yeniden başlat</button><button class="btn" id="savedWrongStart" type="button">Kayıtlı yanlışları çöz</button><button class="btn" id="savedWrongClear" type="button">Yanlış listesini temizle</button></div><p id="savedWrongStatus" class="muted small" aria-live="polite"></p></section>
 <p class="footer">Eğitim amaçlıdır; klinik karar veya kişiye özel tanı/tedavi önerisi değildir. Anatomik varyasyonlar ve ders kapsamı için ders kitabı ve öğretim elemanının kaynakları esas alınmalıdır.</p>
 </main>
 <script>
@@ -231,8 +240,40 @@ document.getElementById('quizTopic').addEventListener('change',()=>{
  document.getElementById('quizIntro').textContent=topic.options[topic.selectedIndex].text+' testi. Yanlışlarını bitişte tekrar çözebilirsin.';
  renderQuiz();
 });
-let quizAttemptSaved=false;function saveQuizAttempt(topicScores){if(quizAttemptSaved||!quizRunData.length)return;quizAttemptSaved=true;try{const history=JSON.parse(localStorage.getItem('ftraQuizHistory')||'[]');const safe=Array.isArray(history)?history:[];safe.push({date:new Date().toISOString(),score,total:quizRunData.length,topics:topicScores.map(item=>({key:item.key,correct:item.correct,total:item.group.length}))});localStorage.setItem('ftraQuizHistory',JSON.stringify(safe.slice(-20)));}catch(error){}}
+let quizAttemptSaved=false;function saveQuizAttempt(topicScores){if(quizAttemptSaved||!quizRunData.length)return;quizAttemptSaved=true;try{const history=JSON.parse(localStorage.getItem('ftraQuizHistory')||'[]');const safe=Array.isArray(history)?history:[];safe.push({date:new Date().toISOString(),score,total:quizRunData.length,topics:topicScores.map(item=>({key:item.key,correct:item.correct,total:item.group.length}))});localStorage.setItem('ftraQuizHistory',JSON.stringify(safe.slice(-20)));}catch(error){}renderQuizHistoryDashboard();}
 function getQuizHistory(){try{const value=JSON.parse(localStorage.getItem('ftraQuizHistory')||'[]');return Array.isArray(value)?value.filter(item=>item&&Number.isFinite(item.score)&&Number.isFinite(item.total)):[]}catch(error){return []}}
+function renderQuizHistoryDashboard(){
+ const history=getQuizHistory();
+ const stats=document.getElementById('quizHistoryStats');
+ const list=document.getElementById('quizHistoryList');
+ if(!stats||!list)return;
+ const latest=history[history.length-1];
+ const best=history.reduce((max,item)=>Math.max(max,item.total>0?item.score/item.total*100:0),0);
+ const latestPct=latest&&latest.total?Math.round(latest.score/latest.total*100):0;
+ stats.replaceChildren();
+ [[String(history.length),'Kayıtlı test'],[latest?latestPct+'%':'—','Son sonuç'],[history.length?Math.round(best)+'%':'—','En iyi oran']].forEach(([value,label])=>{
+  const card=document.createElement('div');card.className='atlas-card';
+  const strong=document.createElement('strong');strong.textContent=value;
+  const p=document.createElement('p');p.className='muted small';p.textContent=label;
+  card.append(strong,p);stats.append(card);
+ });
+ list.replaceChildren();
+ if(!history.length){const li=document.createElement('li');li.textContent='Henüz test geçmişi yok. İlk testi bitirdiğinde burada görünecek.';list.append(li);return}
+ history.slice(-5).reverse().forEach(item=>{
+  const li=document.createElement('li');
+  const date=new Date(item.date);
+  const dateText=Number.isNaN(date.getTime())?'Tarih bilinmiyor':date.toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'});
+  const pct=item.total?Math.round(item.score/item.total*100):0;
+  li.textContent=dateText+' — '+item.score+'/'+item.total+' doğru ('+pct+'%)';
+  list.append(li);
+ });
+}
+document.getElementById('quizHistoryClear')?.addEventListener('click',()=>{
+ try{localStorage.removeItem('ftraQuizHistory')}catch(error){}
+ renderQuizHistoryDashboard();
+ const message=document.getElementById('quizHistoryMessage');
+ if(message)message.textContent='Test geçmişi bu cihazdan temizlendi.';
+});
 function renderQuiz(){const root=document.getElementById('quiz');if(currentQuiz>=quizRunData.length){const isFullRun=quizRunData.length===quizData.length && quizRunData.every((q,i)=>q===quizData[i]);let best=score;if(isFullRun){try{const saved=Number(localStorage.getItem('ftraAnatomyBest')||0);best=Math.max(score,Number.isFinite(saved)?saved:0);localStorage.setItem('ftraAnatomyBest',String(best))}catch(error){}}const topicNames={direction:'Anatomik pozisyon ve yönler',bones:'Kemikler ve iskelet',joints:'Eklem sınıflandırması',muscle:'Kas ve hareket terimleri',nervous:'Sinir sistemi'};const topicReport=Object.entries(quizTopics).map(([key,indices])=>{const group=indices.map(i=>quizData[i]).filter(q=>quizRunData.includes(q));if(!group.length)return '';const correct=group.filter(q=>correctQuestions.includes(q)).length;return '<li><strong>'+topicNames[key]+'</strong>: '+correct+' / '+group.length+' doğru</li>'}).filter(Boolean).join('');const topicScores=Object.entries(quizTopics).map(([key,indices])=>{const group=indices.map(i=>quizData[i]).filter(q=>quizRunData.includes(q));return {key,group,correct:group.filter(q=>correctQuestions.includes(q)).length}}).filter(item=>item.group.length).sort((a,b)=>(a.correct/a.group.length)-(b.correct/b.group.length));const weakestTopic=topicScores.length?topicScores[0]:null;saveQuizAttempt(topicScores);const quizHistory=getQuizHistory();const previousAttempt=quizHistory.length>1?quizHistory[quizHistory.length-2]:null;const historyLine=previousAttempt?'<p class="muted small">Önceki test: '+previousAttempt.score+' / '+previousAttempt.total+' · Değişim: '+((score/quizRunData.length*100)-(previousAttempt.score/previousAttempt.total*100)>=0?'+':'')+Math.round((score/quizRunData.length*100)-(previousAttempt.score/previousAttempt.total*100))+' yüzde puan</p>':'';root.innerHTML='<h3>'+(isFullRun?'Test tamamlandı: ':'Tekrar turu tamamlandı: ')+score+' / '+quizRunData.length+'</h3>'+historyLine+'<p>'+(wrongQuestions.length?'Yanlış yaptığın soru sayısı: '+wrongQuestions.length+'. İstersen bu soruları yeniden çöz.':'Harika! Bu turdaki tüm soruları doğru yanıtladın.')+'</p>'+(topicReport?'<h4>Konu bazında sonuçların</h4><ul class="steps">'+topicReport+'</ul>':'')+(isFullRun?'<p class="muted">Bu cihazdaki en iyi sonucun: '+best+' / '+quizData.length+'</p>':'')+(wrongQuestions.length?'<div class="actions"><button class="btn yellow" type="button" id="retryWrong">Yanlışları tekrar çöz ('+wrongQuestions.length+')</button></div>':'')+(weakestTopic&&weakestTopic.group.length<quizRunData.length?'<div class="actions"><button class="btn yellow" type="button" id="focusWeakest">En çok zorlandığın konu: '+topicNames[weakestTopic.key]+'</button></div>':'')+'<div class="actions"><button class="btn" type="button" id="restartFullQuiz">Tüm testi yeniden başlat</button></div>';const retry=document.getElementById('retryWrong');if(retry)retry.addEventListener('click',()=>{quizRunData=[...wrongQuestions];wrongQuestions=[];correctQuestions=[];currentQuiz=0;score=0;answered=false;quizAttemptSaved=false;renderQuiz()});const focusWeakest=document.getElementById('focusWeakest');if(focusWeakest)focusWeakest.addEventListener('click',()=>{document.getElementById('quizTopic').value=weakestTopic.key;quizRunData=getQuizForSelectedTopic();wrongQuestions=[];correctQuestions=[];currentQuiz=0;score=0;answered=false;quizAttemptSaved=false;document.getElementById('quizIntro').textContent='Zorlandığın konuya özel tekrar turu: '+topicNames[weakestTopic.key]+'.';renderQuiz()});document.getElementById('restartFullQuiz').addEventListener('click',()=>{quizRunData=getQuizForSelectedTopic();wrongQuestions=[];correctQuestions=[];currentQuiz=0;score=0;answered=false;quizAttemptSaved=false;renderQuiz()});return}const q=quizRunData[currentQuiz];displayedAnswers=q.a.map((text,index)=>({text,index}));for(let i=displayedAnswers.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[displayedAnswers[i],displayedAnswers[j]]=[displayedAnswers[j],displayedAnswers[i]];}root.innerHTML='<div class="q"><span class="pill">Soru '+(currentQuiz+1)+' / '+quizRunData.length+'</span><h3>'+q.q+'</h3><div class="answers">'+displayedAnswers.map((a,i)=>'<button class="answer" data-original-i="'+a.index+'">'+a.text+'</button>').join('')+'</div><p id="feedback" class="muted" aria-live="polite"></p><div class="actions"><button class="btn" id="next" disabled>'+(currentQuiz===quizRunData.length-1?'Sonucu gör':'Sonraki soru')+'</button></div></div>';root.querySelectorAll('.answer').forEach(b=>b.addEventListener('click',()=>{if(answered)return;answered=true;const correct=Number(b.dataset.originalI)===q.c;if(correct){score++;if(!correctQuestions.includes(q))correctQuestions.push(q)}else if(!wrongQuestions.includes(q)){wrongQuestions.push(q);saveWrongQuestion(q)}root.querySelectorAll('.answer').forEach(el=>{el.disabled=true;if(Number(el.dataset.originalI)===q.c)el.classList.add('correct')});if(!correct)b.classList.add('wrong');document.getElementById('feedback').textContent=q.e;document.getElementById('next').disabled=false}));document.getElementById('next').addEventListener('click',()=>{currentQuiz++;answered=false;renderQuiz()})}
 const starterCourses={
 fizyoloji:{title:'Fizyoloji · Temel kavramlar',intro:'Vücudun normal işleyişini anlamaya yönelik başlangıç notlarıdır; hocanın haftalık izlencesiyle karşılaştır.',items:[['Homeostaz','Vücudun iç ortamını belirli sınırlar içinde tutma eğilimidir.','Negatif geri bildirim genellikle değişimi azaltarak dengeye dönüşe yardım eder.'],['Hücre zarı ve madde geçişi','Difüzyon, ozmoz ve aktif taşıma temel madde geçiş mekanizmalarıdır.','Aktif taşıma enerji gerektirebilir; basit difüzyon doğrudan ATP harcamaz.'],['Sinir-kas iletişimine giriş','Sinir sistemi kas aktivitesini başlatıp düzenleyebilir.','Kasılmada sinirsel uyarı, hücre içi kalsiyum düzeni ve ATP önemlidir.']],quiz:{q:'Basit difüzyon hangi yönde gerçekleşir?',a:['Yoğunluğun düşük olduğu yerden yükseğe','Yoğunluğun yüksek olduğu yerden düşüğe','Her zaman ATP kullanarak','Yalnızca canlı hücrelerde'],c:1,e:'Basit difüzyon, net olarak yoğunluğun yüksek olduğu yerden düşük olduğu yere gerçekleşir.'}},
@@ -297,6 +338,6 @@ function paintFocus(){const m=Math.floor(focusSeconds/60),s=focusSeconds%60;docu
 document.getElementById('focusStart').addEventListener('click',()=>{if(focusInterval){clearInterval(focusInterval);focusInterval=null;document.getElementById('focusStart').textContent='Devam et';document.getElementById('focusMessage').textContent='Sayaç duraklatıldı.';return}if(focusSeconds<=0)return;document.getElementById('focusStart').textContent='Duraklat';document.getElementById('focusMessage').textContent='Şimdi yalnızca seçtiğin konuya odaklan.';focusInterval=setInterval(()=>{focusSeconds--;paintFocus();if(focusSeconds<=0){clearInterval(focusInterval);focusInterval=null;document.getElementById('focusStart').textContent='Tamamlandı';document.getElementById('focusMessage').textContent='Güzel çalışma. Kısa bir mola ver.'}},1000)});
 document.getElementById('focusReset').addEventListener('click',()=>{if(focusInterval)clearInterval(focusInterval);focusInterval=null;focusSeconds=900;paintFocus();document.getElementById('focusStart').textContent='Başlat';document.getElementById('focusMessage').textContent='Bir konu seç ve 15 dakika odaklan.'});
 
-document.getElementById('quizReset').addEventListener('click',()=>{quizRunData=getQuizForSelectedTopic();wrongQuestions=[];currentQuiz=0;score=0;answered=false;renderQuiz()});renderLessons();quizRunData=getQuizForSelectedTopic();renderQuiz();paintSavedWrongStatus();
+document.getElementById('quizReset').addEventListener('click',()=>{quizRunData=getQuizForSelectedTopic();wrongQuestions=[];currentQuiz=0;score=0;answered=false;renderQuiz()});renderLessons();quizRunData=getQuizForSelectedTopic();renderQuiz();paintSavedWrongStatus();renderQuizHistoryDashboard();
 </script>
 </body></html>
