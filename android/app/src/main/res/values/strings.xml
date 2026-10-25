@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FTR Atlası</string>
+    <string name="refresh">Yenile</string>
+    <string name="no_browser">Bağlantıyı açacak tarayıcı bulunamadı.</string>
+    <string name="load_error">Site yüklenemedi. Bağlantını kontrol edip Yenile’ye dokun.</string>
+</resources>
