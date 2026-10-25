@@ -97,7 +97,7 @@ public final class MainActivity extends Activity {
                 if (isInternalPage(uri)) {
                     return false;
                 }
-                if ("https".equalsIgnoreCase(scheme)) {
+                if ("https".equalsIgnoreCase(scheme) || "mailto".equalsIgnoreCase(scheme)) {
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     } catch (ActivityNotFoundException exception) {
