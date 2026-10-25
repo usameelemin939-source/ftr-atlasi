@@ -208,4 +208,8 @@
     }
   });
   renderDailyPlan();
+  window.addEventListener("pageshow",()=>{
+    renderCourseProgress();
+    renderDailyPlan();
+  });
 })();
