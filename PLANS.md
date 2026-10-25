@@ -33,7 +33,16 @@
 - [ ] Ücretsiz barındırma seçenekleri ve yayın adımları.
 - [ ] Gelir modeli araştırması ve içerik lisanslarının yeniden incelenmesi.
 
+## 6. Tam vücut iskelet atlası ve geniş FTR rotası
+- [x] Tipik erişkin iskeletinin 206 kemiğini sağ/sol ve numaralı segmentler ayrı kayıtlar olarak göster.
+- [x] Her kayıtta Türkçe ve Latince adları, aranabilir kemik parçaları/işaretleri ve bölge filtresi.
+- [x] 80 kemikli eksen iskeleti ile 126 kemikli appendiküler iskelet sayımını doğrula.
+- [x] Kaynak bağlantılarını görünür ver; OpenStax görsellerini veya uzun metinlerini kopyalama.
+- [x] Ders merkezinde 1. sınıfla sınırlı olmayan konu rotasını göster.
+- [ ] Kas atlası, eklem/ROM, kinezyoloji, biyomekanik, sinir sistemi ve klinik derslerin konu içeriklerini ayrı aşamalarda doğrulayarak ekle.
+- **Kaynaklar:** OpenStax A&P 2e iskelet sistemi bölümleri; FIPAT/IFAA terminoloji portalı.
+
 ## Durum
 
-İlk çalışan sürümün özellikleri tamamlandı. Tarayıcıda görsel kontrol ve yayın hazırlığı sonraki aşamada tamamlanmalı.
+206 kemikli iskelet atlasının ilk genişletilmiş sürümü hazırlandı. Ders kataloğu daha ileri FTR alanlarını da kapsayacak şekilde açıldı; rotada “içerik sırada” olarak işaretlenen modüller henüz tamamlanmış ders değildir.
 
