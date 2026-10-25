@@ -137,6 +137,8 @@ function showCourse(course){
  }));
 }
 
+const requestedCourse=location.hash.slice(1);if(['fizyoloji','terminoloji','ftr','psikososyal','finans'].includes(requestedCourse)){showCourse(requestedCourse)}
+
 const recallCards=[...document.querySelectorAll('.recall-card')];
 function updateRecallStatus(){const n=recallCards.filter(c=>c.getAttribute('aria-pressed')==='true').length;document.getElementById('recallStatus').textContent=n+' / '+recallCards.length+' kart açıldı'}
 recallCards.forEach(card=>card.addEventListener('click',()=>{const open=card.getAttribute('aria-pressed')!=='true';card.setAttribute('aria-pressed',String(open));card.querySelector('.recall-back').hidden=!open;card.querySelector('.recall-back').textContent=open?card.dataset.back:'Dokunarak cevabı gör';updateRecallStatus()}));
