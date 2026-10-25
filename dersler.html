@@ -57,10 +57,10 @@
 </section>
 <div id="lessonList"></div></section>
 <section id="boneRecall" class="panel" aria-labelledby="boneRecallTitle" style="margin:18px 0">
-<h3 id="boneRecallTitle">Kemik atlası · Aktif hatırlama</h3>
-<p class="atlas-intro">Bir terimi seç, önce cevabı aklından söyle; sonra yanıtı aç. Bu mini tekrar anatomi testinden bağımsızdır.</p>
+<h3 id="boneRecallTitle">Anatomi terimleri · Aktif hatırlama</h3>
+<p class="atlas-intro">Önce Türkçe karşılığı veya yapıyı aklından söyle, ardından yanıtı aç. Kemik, eklem, kas ve sinir sistemi kartlarını ayrı ayrı çalış.</p>
 <div class="term-row" id="boneRecallChoices" role="group" aria-label="Kemik grubu seçimi">
-<button class="btn" type="button" data-bone-set="all">Tümü</button><button class="btn" type="button" data-bone-set="axial">Eksen iskeleti</button><button class="btn" type="button" data-bone-set="upper">Üst ekstremite</button><button class="btn" type="button" data-bone-set="lower">Alt ekstremite</button>
+<button class="btn" type="button" data-bone-set="all">Tümü</button><button class="btn" type="button" data-bone-set="axial">Eksen iskeleti</button><button class="btn" type="button" data-bone-set="upper">Üst ekstremite</button><button class="btn" type="button" data-bone-set="lower">Alt ekstremite</button><button class="btn" type="button" data-bone-set="joints">Eklemler</button><button class="btn" type="button" data-bone-set="muscle">Kaslar</button><button class="btn" type="button" data-bone-set="nervous">Sinir sistemi</button>
 </div>
 <div class="atlas-card" style="margin-top:12px">
 <p id="boneRecallCount" class="muted small">Kart 1</p><h4 id="boneRecallPrompt">Terim yükleniyor…</h4>
@@ -112,7 +112,17 @@ const boneRecallCards=[
 {set:'lower',front:'Tibia',back:'Kaval kemiği',explain:'Bacağın medialinde yer alan, yük taşımada önemli kemik.'},
 {set:'lower',front:'Fibula',back:'Kamış kemiği',explain:'Bacağın lateralinde yer alır; tibia ile aynı büyüklükte değildir.'},
 {set:'lower',front:'Ossa tarsi',back:'Ayak bileği kemikleri',explain:'Ayak iskeletinin arka bölümündeki kemik grubudur.'}
-];
+,
+{set:'joints',front:'Articulatio genus',back:'Diz eklemi',explain:'Femur, tibia ve patella ile ilişkili karmaşık sinovyal eklemdir.'},
+{set:'joints',front:'Cartilago articularis',back:'Eklem kıkırdağı',explain:'Eklem yüzeylerini örter; sürtünmeyi azaltmaya ve yükleri dağıtmaya yardımcı olur.'},
+{set:'joints',front:'Ligamentum',back:'Bağ',explain:'Kemikleri birbirine bağlar ve eklem stabilitesine katkıda bulunur.'},
+{set:'muscle',front:'Musculus biceps brachii',back:'İki başlı kol kası',explain:'Dirsek fleksiyonuna ve ön kol supinasyonuna katkıda bulunur.'},
+{set:'muscle',front:'Tendo',back:'Tendon',explain:'Kas kuvvetini kemiğe aktarır.'},
+{set:'muscle',front:'Flexio',back:'Fleksiyon',explain:'Genellikle eklem açısının küçülmesiyle tanımlanan harekettir.'},
+{set:'muscle',front:'Abductio',back:'Abduksiyon',explain:'Bir ekstremitenin veya parçanın orta hattan uzaklaşmasıdır.'},
+{set:'nervous',front:'Systema nervosum centrale',back:'Merkezi sinir sistemi',explain:'Beyin ve omurilikten oluşur.'},
+{set:'nervous',front:'Nervus femoralis',back:'Femoral sinir',explain:'Uyluğun ön bölgesindeki bazı kasların motor innervasyonunda ve duyuda rol alır.'},
+{set:'nervous',front:'Afferens',back:'Merkeze doğru bilgi taşıyan',explain:'Duyusal bilgi çoğunlukla periferiden merkezi sinir sistemine iletilir.'}];
 let boneRecallSet='all',boneRecallIndex=0,boneRecallPool=[...boneRecallCards];
 function renderBoneRecall(){boneRecallPool=boneRecallSet==='all'?[...boneRecallCards]:boneRecallCards.filter(card=>card.set===boneRecallSet);if(boneRecallIndex>=boneRecallPool.length)boneRecallIndex=0;const card=boneRecallPool[boneRecallIndex];document.getElementById('boneRecallCount').textContent='Kart '+(boneRecallIndex+1)+' / '+boneRecallPool.length;document.getElementById('boneRecallPrompt').textContent=card.front;document.getElementById('boneRecallLatin').textContent=card.back;document.getElementById('boneRecallExplain').textContent=card.explain;document.getElementById('boneRecallAnswer').hidden=true;document.getElementById('boneRecallReveal').textContent='Yanıtı göster'}
 document.querySelectorAll('[data-bone-set]').forEach(button=>button.addEventListener('click',()=>{boneRecallSet=button.dataset.boneSet;boneRecallIndex=0;renderBoneRecall()}));
