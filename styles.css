@@ -135,3 +135,11 @@ body{background:#f7fbfe}
 .brand-mark,.primary-action,.filter-button.active,.quiz-option.selected{background:#b7eff3;color:#10243a}
 a:focus-visible,button:focus-visible,input:focus-visible{outline-color:#168ba2}
 .course-card,.dashboard-card,.term-card,.quiz-card{box-shadow:0 8px 24px rgba(16,36,58,.045)}
+
+/* Dashboard card status and interaction polish */
+.course-card{min-width:0;overflow:hidden}
+.course-card:focus-visible,.lower-panel:focus-visible{outline:3px solid #168ba2;outline-offset:4px}
+.course-card .course-progress span{display:block;height:100%;background:linear-gradient(90deg,#3bb5c5,#6ad8cf)}
+.course-card-body>small{color:#55748d;font-weight:700;letter-spacing:.01em}
+.course-card:hover .course-art{filter:saturate(1.08)}
+@media(prefers-reduced-motion:reduce){.course-card,.course-art,.lower-panel{transition:none!important}}
