@@ -273,6 +273,14 @@ function renderQuizHistoryDashboard(){
    const title=document.createElement('strong');title.textContent=topicNames[item.key];
    const detail=document.createElement('p');detail.className='muted small';detail.textContent=item.correct+' / '+item.total+' doğru ('+pct+'%)';
    card.append(title,detail);
+   const previous=history.slice(0,-1).reverse().find(attempt=>Array.isArray(attempt.topics)&&attempt.topics.some(old=>old&&old.key===item.key&&Number.isFinite(old.correct)&&Number.isFinite(old.total)&&old.total>0));
+   if(previous){
+    const old=previous.topics.find(old=>old&&old.key===item.key&&Number.isFinite(old.correct)&&Number.isFinite(old.total)&&old.total>0);
+    const delta=pct-Math.round(old.correct/old.total*100);
+    const trend=document.createElement('p');trend.className='muted small';
+    trend.textContent=delta>0?'Önceki kayda göre +'+delta+' puan':delta<0?'Önceki kayda göre '+delta+' puan':'Önceki kayıtla aynı oran';
+    card.append(trend);
+   }
    if(item.key===weakest.key){const note=document.createElement('p');note.className='muted small';note.textContent='Bu denemedeki en çok tekrar gerektiren konu.';card.append(note)}
    topicRoot.append(card);
   });
