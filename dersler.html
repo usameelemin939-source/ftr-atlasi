@@ -281,7 +281,16 @@ function renderQuizHistoryDashboard(){
     trend.textContent=delta>0?'Önceki kayda göre +'+delta+' puan':delta<0?'Önceki kayda göre '+delta+' puan':'Önceki kayıtla aynı oran';
     card.append(trend);
    }
-   if(item.key===weakest.key){const note=document.createElement('p');note.className='muted small';note.textContent='Bu denemedeki en çok tekrar gerektiren konu.';card.append(note)}
+   if(item.key===weakest.key){
+    const note=document.createElement('p');note.className='muted small';note.textContent='Bu denemedeki en çok tekrar gerektiren konu.';card.append(note);
+    const practice=document.createElement('button');practice.type='button';practice.className='btn';practice.textContent='Bu konuyu tekrar et';
+    practice.addEventListener('click',()=>{
+     const select=document.getElementById('quizTopic');
+     if(select){select.value=item.key;select.dispatchEvent(new Event('change'));}
+     document.getElementById('quiz')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    card.append(practice);
+   }
    topicRoot.append(card);
   });
  }
