@@ -50,7 +50,9 @@
 - [x] Bölge filtresi ve kas/terim araması.
 - [x] Başlangıç, sonlanma, innervasyon ve temel fonksiyon alanları.
 - [x] Ek okuma için OpenStax kas sistemi bağlantıları.
-- [ ] Ayrıntılı kaynak doğrulaması, görsel atlas bağlantıları ve daha geniş kas kapsamı.
+- [x] 10 temel kas kartına Wikimedia Commons kaynak/lisans bağlantılı görsel eşleştirmeleri eklendi (11 görsel kaydı).
+- [ ] Görsellerin gerçek tarayıcıda açılmasını ve her lisans/atıf metnini tek tek doğrula.
+- [ ] Kas başlangıç, sonlanma, innervasyon ve fonksiyonlarını ders kaynaklarıyla ayrıntılı karşılaştır; daha geniş kas kapsamı ekle.
 - [ ] Tarayıcı/telefon görünüm testi.
 
 ## Durum
