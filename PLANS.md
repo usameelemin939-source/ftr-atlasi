@@ -1,5 +1,14 @@
 # FTR Atlası — geliştirme planı
 
+## Öncelik kuralı: önce web sitesi, uygulama en son
+- Öncelik, mevcut web sitesinin tüm sayfalarını, bağlantılarını ve gezinmesini kontrol etmek ve düzeltmektir.
+- Gerçek telefon/tablet görünümü, klavye erişimi, arama/filtre ve quiz akışları test edilmeden yeni büyük özelliklere geçme.
+- İskelet ve kas atlasındaki içerik, görsel yüklenmesi, kaynak bağlantıları ve lisans atıfları denetlenmeli.
+- Performans, hata durumları ve erişilebilirlik kontrolleri tamamlanıp web yayını doğrulanmalı.
+- Yeni FTR içerikleri, web sitesi temel kalite kontrolleri tamamlandıktan sonra aşamalı eklenmeli.
+- **Android uygulaması son aşamadır.** Şimdilik yeni uygulama geliştirme işi açma; mevcut Android klasörünü ve uygulama fikrini daha sonra değerlendirmek üzere koru. Önce web sürümü sağlamlaştırılacak.
+
+
 ## 1. Çalışan temel web sitesi
 - [x] Türkçe ana sayfa ve net gezinme.
 - [x] Bağımlılıksız statik site ve çalıştırma adımları.
