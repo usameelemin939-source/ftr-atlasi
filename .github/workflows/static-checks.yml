@@ -113,9 +113,9 @@ jobs:
           let checked = 0;
           for (const page of pages) {
             const html = fs.readFileSync(page, 'utf8');
-            const scripts = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script\\s*>/gi)];
+            const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
             for (const [, attrs, body] of scripts) {
-              if (/\\bsrc\\s*=/.test(attrs) || !body.trim()) continue;
+              if (/\bsrc\s*=/.test(attrs) || !body.trim()) continue;
               new vm.Script(body, { filename: page + ':inline-script-' + (++checked) + '.js' });
             }
           }
