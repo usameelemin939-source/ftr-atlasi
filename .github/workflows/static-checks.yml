@@ -161,7 +161,7 @@ jobs:
               if (seen.has(id)) errors.push(page + ': duplicate id="' + id + '"');
               seen.add(id);
             }
-            idsByPage.set(page, new Set([...ids, ...[...html.matchAll(/<a\b[^>]*\bname\s*=\s*["']([^"']+)["']/gi)].map(match => match[1])]));
+            idsByPage.set(page, new Set([...ids, ...[...html.matchAll(/<a\b[^>]*\bname\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]), ...[...html.matchAll(/showCourse\(['"]([^'"]+)['"]\)/g)].map(match => match[1])]));
             if (!/<meta\s+name=["']viewport["']/i.test(html)) errors.push(page + ': missing viewport meta tag');
             for (const [, attrs] of html.matchAll(/<img\b([^>]*)>/gi)) {
               if (!/\balt\s*=/.test(attrs)) errors.push(page + ': image missing alt attribute');
