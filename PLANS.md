@@ -30,8 +30,10 @@
 - [x] Arama, kategori, quiz ve puan akışlarının işlevsel denetimi.
 - [x] Temel semantik ve klavye erişimi uygulandı.
 - [ ] Gerçek tarayıcıda mobil görünüm ve erişilebilirlik taraması.
-- [ ] Ücretsiz barındırma seçenekleri ve yayın adımları.
-- [ ] Gelir modeli araştırması ve içerik lisanslarının yeniden incelenmesi.
+- [x] Ücretsiz barındırma ve GitHub Pages yayın akışı kullanılıyor.
+- [ ] Gelir modeli araştırması ve tam içerik lisansı incelemesi.
+- [x] OpenStax ve FIPAT için resmi kaynaklara dayalı ilk lisans notu `LICENSING.md` dosyasına eklendi.
+- **Not:** Depoda henüz `LICENSE` dosyası yok; proje kodu için lisans seçimi yapılmadı. Bu dokümantasyon, kod lisansı ilan etmez ve hukuki görüş değildir.
 
 ## 6. Tam vücut iskelet atlası ve geniş FTR rotası
 - [x] Tipik erişkin iskeletinin 206 kemiğini sağ/sol ve numaralı segmentler ayrı kayıtlar olarak göster.
@@ -44,5 +46,4 @@
 
 ## Durum
 
-206 kemikli iskelet atlasının ilk genişletilmiş sürümü hazırlandı. Ders kataloğu daha ileri FTR alanlarını da kapsayacak şekilde açıldı; rotada “içerik sırada” olarak işaretlenen modüller henüz tamamlanmış ders değildir.
-
+206 kemikli iskelet atlasının ilk genişletilmiş sürümü hazırlandı. Ders kataloğu daha ileri FTR alanlarını da kapsayacak şekilde açıldı; rotada “içerik sırada” olarak işaretlenen modüller henüz tamamlanmış ders değildir. Gerçek tarayıcı testi ve tam lisans/gelir modeli incelemesi devam ediyor.
