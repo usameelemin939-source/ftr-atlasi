@@ -88,7 +88,7 @@
     const level = document.getElementById('ai-level').value;
     const modes = {
       visual: 'Önce güvenilir, telif koşulları uygun bir anatomik görseli veya görsel kaynağını öner. Görseldeki yapıları tek tek Türkçe ve Latince adlandır; görselde gerçekten görülemeyen ayrıntıları uydurma. Görseli bulamazsan bunu açıkça söyle ve görsel arama terimleri ver.',
-      teach: 'Konuyu sade Türkçeyle küçük parçalara bölerek öğret. Her parçadan sonra kısa bir örnek ver ve önemli Latince terimi parantez içinde açıkla.',
+      teach: 'Konuyu sade Türkçeyle küçük parçalara bölerek öğret. Her parçadan sonra kısa bir örnek ver ve önemli Latince terimi parantez içinde açıkla. Önce normal anatomik fotoğraf veya çizim kullan; 3D zorunlu değil.',
       quiz: 'Beni sırayla 5 soruyla sına. Her seferinde yalnızca bir soru sor; yanıtımı bekle, sonra açıkla ve sonraki soruya geç. Sorular FTR 1. sınıf düzeyinde olsun.',
       recall: 'Aktif hatırlama için kısa soru-cevap kartları oluştur. Önce soruyu göster, yanıtımı bekle; sonra doğru cevabı ve kısa açıklamayı ver.',
       exam: 'FTR 1. sınıf düzeyinde sınava hazırlık soruları hazırla. Çoktan seçmeli ve kısa cevaplı sorular karışık olsun; cevap anahtarını yanıtımdan önce gösterme.',
@@ -99,7 +99,7 @@
       lab: 'Beni anatomi laboratuvarındaki kemik modeli başında çalıştır. Önce yönleri ve görünüşü belirlet; sonra belirgin işaretleri sırayla buldur. Sağ-sol ve görünüş konusunda emin değilsen tahmin etme.',
       detail: 'Türkçe adların yanında doğru Latince anatomik terimleri de kullan. Terimleri açıklarken temel anatomi bilgisini koru; emin olmadığın ayrıntıyı kesin bilgi gibi sunma.'
     };
-    const prompt = 'Sen FTR Atlası içindeki öğrenme asistanısın. Kullanıcı Türkiye’de Fizyoterapi ve Rehabilitasyon 1. sınıf öğrencisi.\nKONU: ' + topic + '\nÖĞRENME MODU: ' + modes[mode] + '\nSEVİYE: ' + levels[level] + '\n\nKurallar: Eğitim amacıyla yanıt ver; tanı veya kişiye özel tedavi önerme. Türkçe ve Latince terimleri birlikte kullan. Anatomik iddialarda emin değilsen bunu açıkça belirt; görselde olmayan işaretleri uydurma. Konuyu görsel, küçük adımlar ve sınavda hatırlanabilir ipuçlarıyla öğret. Kullanıcıya aynı anda çok fazla bilgi yükleme.';
+    const prompt = 'Sen FTR Atlası içindeki öğrenme asistanısın. Kullanıcı Türkiye’de Fizyoterapi ve Rehabilitasyon 1. sınıf öğrencisi.\nKONU: ' + topic + '\nÖĞRENME MODU: ' + modes[mode] + '\nSEVİYE: ' + levels[level] + '\n\nKurallar: Eğitim amacıyla yanıt ver; tanı veya kişiye özel tedavi önerme. Türkçe ve Latince terimleri birlikte kullan. Anatomik iddialarda emin değilsen bunu açıkça belirt; görselde olmayan işaretleri uydurma. Konuyu görsel, küçük adımlar ve sınavda hatırlanabilir ipuçlarıyla öğret. Öncelik güvenilir, kaynak bağlantısı bulunan normal anatomik fotoğraf ve çizimler olsun; 3D görsel şart değil, sitede zaten ayrı bir 3D alanı var. Görsel önerirken mümkünse açık lisanslı kaynakları kullan ve kaynak bağlantısını ver. Kullanıcıya aynı anda çok fazla bilgi yükleme.';
     const url = 'https://chatgpt.com/?q=' + encodeURIComponent(prompt);
     const status = document.getElementById('ai-status');
     status.textContent = 'ChatGPT açılıyor. Açılan sohbet kutusuna talimatın gelmezse aşağıdaki konu ve modu kullanarak istemi elle yapıştırman gerekebilir.';
