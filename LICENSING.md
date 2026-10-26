@@ -30,3 +30,13 @@ Bu not bir lisans seçimi yapmaz ve mevcut hakları değiştirmez.
 - Terminologia Anatomica 2 lisans açıklaması: https://fipat.library.dal.ca/wp-content/uploads/2021/08/FIPAT-TA2-Front-Matter.pdf
 
 Bu not hukuki görüş yerine geçmez. Lisans ve kullanım koşulları değişebileceğinden, kullanım öncesi ilgili kaynağın güncel şartları esas alınmalıdır.
+
+## İskelet atlasındaki başlangıç görselleri
+
+Aşağıdaki lisanslar ilgili Wikimedia Commons dosya sayfalarında kontrol edilmiştir. Her kartın bağlantısı doğrudan ilgili dosya sayfasına gider; yeni görseller eklenirken aynı şekilde dosya bazında lisans ve atıf kontrolü yapılmalıdır.
+
+- **Human skull no text no color.svg** — LadyofHats / Mariana Ruiz Villarreal; kamu malı (public domain). Kaynak: https://commons.wikimedia.org/wiki/File:Human_skull_no_text_no_color.svg
+- **Femur - anterior view.png** — Anatomography / Database Center for Life Science (DBCLS); Creative Commons Attribution-Share Alike 2.1 Japan (CC BY-SA 2.1 JP). Atıf ve lisans bağlantısı korunmalı; uyarlama yapılırsa lisans koşulları dikkate alınmalı. Kaynak: https://commons.wikimedia.org/wiki/File:Femur_-_anterior_view.png
+- **Vertebra Superior View.jpg** — OpenStax College; Creative Commons Attribution 3.0 Unported (CC BY 3.0). Kaynak: https://commons.wikimedia.org/wiki/File:Vertebra_Superior_View.jpg
+
+Bu üç görsel yalnızca başlangıç galerisi içindir; 206 kemiğin tamamı için görsel bulunduğu anlamına gelmez. Lisans durumu proje çapında otomatik olarak doğrulanmıyor; her yeni dosya ayrı incelenmelidir.
