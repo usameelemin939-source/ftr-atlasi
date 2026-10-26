@@ -44,6 +44,16 @@
 - [ ] Kas atlası, eklem/ROM, kinezyoloji, biyomekanik, sinir sistemi ve klinik derslerin konu içeriklerini ayrı aşamalarda doğrulayarak ekle.
 - **Kaynaklar:** OpenStax A&P 2e iskelet sistemi bölümleri; FIPAT/IFAA terminoloji portalı.
 
+## 7. Kas atlası — ilk sürüm
+- [x] 11 temel kas için Türkçe/Latince ad kartları.
+- [x] Bölge filtresi ve kas/terim araması.
+- [x] Başlangıç, sonlanma, innervasyon ve temel fonksiyon alanları.
+- [x] Ek okuma için OpenStax kas sistemi bağlantıları.
+- [x] 11 kas kartına Wikimedia Commons kaynak/lisans bağlantılı görsel eşleştirmeleri eklendi.
+- [ ] Görsellerin gerçek tarayıcıda açılmasını ve her lisans/atıf metnini tek tek doğrula.
+- [ ] Kas başlangıç, sonlanma, innervasyon ve fonksiyonlarını ders kaynaklarıyla ayrıntılı karşılaştır; daha geniş kas kapsamı ekle.
+- [ ] Tarayıcı/telefon görünüm testi.
+
 ## Durum
 
-206 kemikli iskelet atlasının ilk genişletilmiş sürümü hazırlandı. Ders kataloğu daha ileri FTR alanlarını da kapsayacak şekilde açıldı; rotada “içerik sırada” olarak işaretlenen modüller henüz tamamlanmış ders değildir. Gerçek tarayıcı testi ve tam lisans/gelir modeli incelemesi devam ediyor.
+206 kemikli iskelet atlasının ilk genişletilmiş sürümü hazırlandı. Kas atlasının ilk sürümünde 11 kas kaydı bulunuyor; bu, kapsamlı bir kas atlası değildir. Ders kataloğu daha ileri FTR alanlarını da kapsayacak şekilde açıldı; rotada “içerik sırada” olarak işaretlenen modüller henüz tamamlanmış ders değildir. Gerçek tarayıcı testi ve tam lisans/gelir modeli incelemesi devam ediyor.
