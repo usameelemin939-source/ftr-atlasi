@@ -45,6 +45,45 @@ jobs:
           console.log(`Syntax OK: ${checked} inline script block(s).`);
           NODE
 
+      - name: Check inline JavaScript and data in kas-atlasi.html
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const html = fs.readFileSync('kas-atlasi.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+          let checked = 0;
+          for (const [, attrs, body] of scripts) {
+            if (/\bsrc\s*=/.test(attrs) || !body.trim()) continue;
+            new vm.Script(body, { filename: `kas-atlasi.html:inline-script-${++checked}.js` });
+          }
+          if (!checked) {
+            console.error('No inline JavaScript blocks were found in kas-atlasi.html.');
+            process.exit(1);
+          }
+
+          const match = html.match(/const M=(\[[\s\S]*?\]);/);
+          if (!match) {
+            console.error('Could not find the muscle data array.');
+            process.exit(1);
+          }
+          const muscles = vm.runInNewContext(match[1]);
+          if (muscles.length < 11) {
+            console.error(`Expected at least 11 starter muscles; found ${muscles.length}.`);
+            process.exit(1);
+          }
+          const latinNames = muscles.map(m => m[1]?.trim().toLocaleLowerCase());
+          if (muscles.some(m => !Array.isArray(m) || m.length !== 7 || m.some(v => typeof v !== 'string' || !v.trim()))) {
+            console.error('Each muscle must have seven non-empty fields: Turkish name, Latin name, region, origin, insertion, innervation, and function.');
+            process.exit(1);
+          }
+          if (new Set(latinNames).size !== latinNames.length) {
+            console.error('Duplicate Latin muscle names found.');
+            process.exit(1);
+          }
+          console.log(`Muscle atlas OK: ${muscles.length} complete entries, unique Latin names, ${checked} inline script block(s) syntax-checked.`);
+          NODE
+
       - name: Check the full adult skeleton inventory
         run: |
           node <<'NODE'
