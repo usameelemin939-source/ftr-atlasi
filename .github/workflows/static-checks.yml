@@ -144,3 +144,30 @@ jobs:
 
           console.log(`Reference check OK: ${new Set(selectors).size} app selectors and ${new Set(lessonTargets).size} lesson links.`);
           NODE
+
+      - name: Check local links, image alt text, and mobile viewport
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const pages = fs.readdirSync('.').filter(name => name.endsWith('.html'));
+          const errors = [];
+          for (const page of pages) {
+            const html = fs.readFileSync(page, 'utf8');
+            if (!/<meta\\s+name=[\"']viewport[\"']/i.test(html)) errors.push(page + ': missing viewport meta tag');
+            for (const [, attrs] of html.matchAll(/<img\\b([^>]*)>/gi)) {
+              if (!/\\balt\\s*=/.test(attrs)) errors.push(page + ': image missing alt attribute');
+            }
+            for (const [, attr, quote, raw] of html.matchAll(/\\b(href|src)\\s*=\\s*([\"'])(.*?)\\2/gi)) {
+              const value = raw.trim();
+              if (!value || value.startsWith('#') || /^(?:https?:|mailto:|tel:|javascript:|data:|blob:|\\/\\/)/i.test(value)) continue;
+              const pathname = decodeURIComponent(value.split(/[?#]/, 1)[0]);
+              if (!pathname) continue;
+              const resolved = path.normalize(path.join(path.dirname(page), pathname));
+              const target = pathname.endsWith('/') ? path.join(resolved, 'index.html') : resolved;
+              if (!fs.existsSync(target)) errors.push(page + ': broken local ' + attr + '="' + value + '"');
+            }
+          }
+          if (errors.length) { console.error(errors.join('\\n')); process.exit(1); }
+          console.log('Local link, image alt, and viewport checks passed for ' + pages.length + ' HTML pages.');
+          NODE
