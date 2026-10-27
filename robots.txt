@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://usameelemin939-source.github.io/ftr-atlasi/sitemap.xml
