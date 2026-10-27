@@ -270,27 +270,72 @@
       {name:"Falankslar",latin:"Phalanges digitorum pedis",description:"Ayak parmaklarını oluşturan kemiklerdir; başparmakta iki, diğer parmaklarda genellikle üç falanks bulunur.",memory:"Başparmak 2, diğer parmaklar 3 falanks."}
     ]
   };
+  const boneLearningKey = "ftr-atlasi-bone-structures-v1";
+  let activeBoneKey = "femur";
+  let activeBoneStructureIndex = 0;
+  function readBoneLearning() {
+    try {
+      const value = JSON.parse(localStorage.getItem(boneLearningKey) || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch { return {}; }
+  }
+  function saveBoneLearning(value) {
+    try { localStorage.setItem(boneLearningKey, JSON.stringify(value)); } catch { /* Depolama kapalıysa panel çalışmaya devam eder. */ }
+  }
+  function renderBoneLearning(key, selectedIndex, total) {
+    const saved = readBoneLearning();
+    const learned = new Set(Array.isArray(saved[key]) ? saved[key].filter(n => Number.isInteger(n) && n >= 0 && n < total) : []);
+    const fill = document.querySelector("#bone-learning-fill");
+    const track = fill?.parentElement;
+    const label = document.querySelector("#bone-learning-label");
+    const toggle = document.querySelector("#bone-learning-toggle");
+    if (fill) fill.style.width = Math.round(learned.size / total * 100) + "%";
+    if (track) { track.setAttribute("aria-valuemax", String(total)); track.setAttribute("aria-valuenow", String(learned.size)); track.setAttribute("aria-label", "Öğrenilen " + key + " yapıları"); }
+    if (label) label.textContent = learned.size + " / " + total + " yapı öğrenildi";
+    if (toggle) {
+      const isLearned = learned.has(selectedIndex);
+      toggle.textContent = isLearned ? "Öğrenildi · geri al" : "Bu yapıyı öğrendim";
+      toggle.setAttribute("aria-pressed", String(isLearned));
+    }
+    document.querySelectorAll(".bone-structure-option").forEach((button, index) => {
+      button.classList.toggle("is-learned", learned.has(index));
+      button.setAttribute("aria-label", button.textContent + (learned.has(index) ? ", öğrenildi" : ""));
+    });
+  }
   function renderBoneStructure(key, selectedIndex = 0) {
     const structures = boneStructureSets[key] || boneStructureSets.femur;
     const options = document.querySelector("#bone-structure-options");
     if (!options) return;
+    activeBoneKey = key;
+    activeBoneStructureIndex = Math.max(0, Math.min(selectedIndex, structures.length - 1));
     options.replaceChildren();
     structures.forEach((item, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "bone-structure-option";
       button.textContent = item.name;
-      button.setAttribute("aria-pressed", String(index === selectedIndex));
+      button.setAttribute("aria-pressed", String(index === activeBoneStructureIndex));
       button.addEventListener("click", () => renderBoneStructure(key, index));
       options.append(button);
     });
-    const item = structures[selectedIndex] || structures[0];
-    document.querySelector("#bone-structure-number").textContent = "YAPI " + String(selectedIndex + 1).padStart(2, "0") + " / " + structures.length;
+    const item = structures[activeBoneStructureIndex];
+    document.querySelector("#bone-structure-number").textContent = "YAPI " + String(activeBoneStructureIndex + 1).padStart(2, "0") + " / " + structures.length;
     document.querySelector("#bone-structure-name").textContent = item.name;
     document.querySelector("#bone-structure-latin").textContent = item.latin;
     document.querySelector("#bone-structure-description").textContent = item.description;
     document.querySelector("#bone-structure-memory").textContent = "Hatırla: " + item.memory;
+    renderBoneLearning(key, activeBoneStructureIndex, structures.length);
   }
+  document.querySelector("#bone-learning-toggle")?.addEventListener("click", () => {
+    const structures = boneStructureSets[activeBoneKey] || boneStructureSets.femur;
+    const saved = readBoneLearning();
+    const learned = new Set(Array.isArray(saved[activeBoneKey]) ? saved[activeBoneKey] : []);
+    if (learned.has(activeBoneStructureIndex)) learned.delete(activeBoneStructureIndex);
+    else learned.add(activeBoneStructureIndex);
+    saved[activeBoneKey] = [...learned].filter(n => Number.isInteger(n) && n >= 0 && n < structures.length).sort((x, y) => x - y);
+    saveBoneLearning(saved);
+    renderBoneLearning(activeBoneKey, activeBoneStructureIndex, structures.length);
+  });
   renderBoneStructure("femur");
   const structurePanel = document.querySelector("#femur-study");
   function showFemurStructure(key) {
