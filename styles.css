@@ -418,3 +418,21 @@ body{background:radial-gradient(ellipse at 50% -18%,#173247 0,transparent 43%),#
 .model-check-feedback.is-correct{color:#17654a}
 .model-check-feedback.is-wrong{color:#8b2929}
 @media(max-width:650px){.model-quick-check{grid-template-columns:1fr;gap:12px;padding:16px}.model-check-feedback{grid-column:auto}}
+
+/* Model-aware Turkish/Latin structure explorer */
+.bone-structure-explorer{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.9fr);gap:16px 24px;margin-top:18px;padding:22px;border:1px solid #d8e5ee;border-radius:18px;background:#f6fbff}
+.bone-structure-heading{grid-column:1/-1}
+.bone-structure-heading .quiz-kicker{margin:0 0 5px;color:#147b8e;font-size:.67rem;font-weight:850;letter-spacing:.12em}
+.bone-structure-heading h3{margin:0;color:#10243a;font-size:1.18rem}
+.bone-structure-heading>p:last-child{margin:5px 0 0;color:#60758a;font-size:.85rem}
+.bone-structure-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:8px}
+.bone-structure-option{padding:10px 12px;border:1px solid #dbe7f0;border-radius:10px;background:#fff;color:#183a55;text-align:left;font:inherit;font-size:.79rem;font-weight:750;cursor:pointer}
+.bone-structure-option[aria-pressed=true]{border-color:#147b8e;background:#e5f8fa;box-shadow:inset 3px 0 #147b8e}
+.bone-structure-detail{padding:17px;border:1px solid #dbe7f0;border-radius:13px;background:#fff}
+.bone-structure-number{margin:0 0 5px;color:#147b8e;font-size:.66rem;font-weight:850;letter-spacing:.1em}
+.bone-structure-detail h4{margin:0;color:#10243a;font-size:1.08rem}
+.bone-structure-latin{margin:3px 0 12px;color:#147b8e;font-size:.86rem;font-weight:750;font-style:italic}
+.bone-structure-description{margin:0;color:#40586c;font-size:.84rem;line-height:1.7}
+.bone-structure-memory{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:#f0f6fa;color:#183a55;font-size:.78rem;line-height:1.6}
+.bone-structure-note{grid-column:1/-1;margin:0;color:#60758a;font-size:.73rem;line-height:1.6}
+@media(max-width:650px){.bone-structure-explorer{grid-template-columns:1fr;padding:16px}.bone-structure-heading,.bone-structure-note{grid-column:auto}.bone-structure-options{grid-template-columns:1fr 1fr}}
