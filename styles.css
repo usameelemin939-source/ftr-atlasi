@@ -436,3 +436,17 @@ body{background:radial-gradient(ellipse at 50% -18%,#173247 0,transparent 43%),#
 .bone-structure-memory{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:#f0f6fa;color:#183a55;font-size:.78rem;line-height:1.6}
 .bone-structure-note{grid-column:1/-1;margin:0;color:#60758a;font-size:.73rem;line-height:1.6}
 @media(max-width:650px){.bone-structure-explorer{grid-template-columns:1fr;padding:16px}.bone-structure-heading,.bone-structure-note{grid-column:auto}.bone-structure-options{grid-template-columns:1fr 1fr}}
+
+/* Per-bone learning progress */
+.bone-learning-progress{grid-column:1/-1;padding:15px 16px;border:1px solid #dbe7f0;border-radius:12px;background:#fff}
+.bone-learning-progress-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bone-learning-progress-top b{color:#183a55;font-size:.84rem}
+.bone-learning-progress-top p{margin:3px 0 0;color:#60758a;font-size:.75rem}
+.bone-learning-toggle{flex-shrink:0;padding:9px 12px;border:1px solid #147b8e;border-radius:9px;background:#fff;color:#147b8e;font:inherit;font-size:.75rem;font-weight:800;cursor:pointer}
+.bone-learning-toggle[aria-pressed=true]{background:#e5f8fa}
+.bone-learning-track{height:8px;margin-top:12px;overflow:hidden;border-radius:99px;background:#e7eef3}
+.bone-learning-track span{display:block;width:0;height:100%;border-radius:inherit;background:#147b8e;transition:width .2s ease}
+.bone-structure-option.is-learned{border-color:#8ccbb9;background:#edf9f4}
+.bone-structure-option.is-learned::after{content:" · Öğrenildi";display:block;margin-top:3px;color:#26765e;font-size:.65rem;font-weight:800}
+@media(max-width:520px){.bone-learning-progress-top{align-items:flex-start;flex-direction:column}.bone-learning-toggle{width:100%}}
+@media(prefers-reduced-motion:reduce){.bone-learning-track span{transition:none}}
