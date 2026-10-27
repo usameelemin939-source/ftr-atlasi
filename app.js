@@ -190,6 +190,7 @@
     foot: {url:"https://sketchfab.com/models/3741b9acf74b4206aa6fd9dbb20ad583/embed?autostart=0&ui_theme=dark",name:"Ayak kemikleri",latin:"Ossa pedis",source:"https://sketchfab.com/3d-models/human-foot-bones-3741b9acf74b4206aa6fd9dbb20ad583",facts:["Ayak kemikleri tarsal, metatarsal ve falanks kemiklerine ayrılır.","Yedi tarsal kemik ayak bileği ve arka ayak bölgesinde bulunur.","Her ayakta beş metatarsal kemik vardır."],quiz:{question:"Bir ayakta kaç tarsal kemik bulunur?",options:["5","7","14"],answer:1,explanation:"Her ayakta 7 tarsal kemik bulunur; bunlar arka ayak ve orta ayak bölgesinin kemikleridir."}}
   };
   let activeSketchfabApi = null;
+  let activeSketchfabNodes = new Map();
   let sketchfabLoadToken = 0;
   function setModelInteractionStatus(message, state = "") {
     const status = document.querySelector("#model-interaction-status");
@@ -208,6 +209,7 @@
     }
     const token = ++sketchfabLoadToken;
     activeSketchfabApi = null;
+    activeSketchfabNodes = new Map();
     frame.title = item.name + " — " + item.latin + " 3B modeli";
     setModelInteractionStatus("3B model yükleniyor…", "loading");
     const client = new window.Sketchfab(frame);
@@ -236,18 +238,28 @@
               setModelInteractionStatus("Model üzerinde seçilebilir bir parça bulunamadı. Başka bir noktaya tıkla.", "idle");
               return;
             }
-            let materialName = info.material && (info.material.name || info.material.displayName);
+            const node = activeSketchfabNodes.get(Number(info.instanceID));
+            const nodeName = node && (node.name || node.instanceName);
+            const materialName = info.material && (info.material.name || info.material.displayName);
             try {
               if (info.material) api.highlightMaterial(info.material);
             } catch (error) {
               // Keep the selection feedback available even if the model disallows highlighting.
             }
-            const label = materialName ? "Malzeme: " + materialName : "Model parçası seçildi (parça kimliği " + info.instanceID + ").";
-            setModelInteractionStatus(label + " Not: bu, femur başı gibi anatomik bir yapının otomatik tanımlandığı anlamına gelmez.", "selected");
+            const parts = [];
+            if (nodeName) parts.push("Model düğümü: " + nodeName);
+            if (materialName) parts.push("Malzeme: " + materialName);
+            if (!parts.length) parts.push("Model parçası seçildi (parça kimliği " + info.instanceID + ").");
+            setModelInteractionStatus(parts.join(" · ") + " — Modelin kendi adı anatomik doğrulama yerine geçmez.", "selected");
           }, { pick: "slow" });
           api.getNodeMap(function (error, nodes) {
             if (token !== sketchfabLoadToken || error || !Array.isArray(nodes)) return;
-            // Node names are available for future model-specific anatomy mapping.
+            activeSketchfabNodes = new Map();
+            nodes.forEach(function (node) {
+              if (node && node.instanceID !== undefined) {
+                activeSketchfabNodes.set(Number(node.instanceID), node);
+              }
+            });
           });
         });
         api.start();
