@@ -1,28 +1,35 @@
 # FTR Atlası
 
-FTR Atlası, Fizyoterapi ve Rehabilitasyon öğrencilerinin temel anatomi terimlerini Türkçe ve Latince birlikte çalışabileceği ücretsiz bir öğrenme sitesidir. Bu ilk sürümde dört anatomi kategorisi, arama ve filtreleme, 24 terim kartı ve 12 soruluk quiz bulunur.
+FTR Atlası, Fizyoterapi ve Rehabilitasyon öğrencileri için Türkçe-Latince anatomi öğrenme ve tekrar sitesidir. Ücretsizdir; sade HTML, CSS ve JavaScript ile çalışır, ücretli API veya üyelik gerektirmez.
 
-Uygulama eğitim amaçlıdır; klinik tanı veya tedavi önerisi vermez. Hesap veya sunucu kullanmaz. En iyi quiz puanı, tarayıcının yerel depolamasına yazılır; tarayıcı depolamayı kapatırsa quiz yine çalışır.
+## Sitede neler var?
+
+- **Öğrenme haritası ve Ders Merkezi:** Konular arasında gezinme ve farklı başlangıç noktalarından öğrenmeye başlama.
+- **Anatomi terimleri:** Temel terim kartları, arama ve kategori filtreleri.
+- **Femur rehberi:** Femurun temel anatomik yapıları, Türkçe-Latince adları, kısa açıklamalar ve öğrenme takibi.
+- **İskelet Atlası:** Tipik erişkin iskeletindeki 206 kemiği bölgeye göre arama ve inceleme.
+- **Kas Atlası:** İlk sürümde 11 temel kas için adlandırma ve temel bilgiler; henüz kapsamlı bir kas kataloğu değildir.
+- **Quiz ve tekrar:** Temel anatomi soruları, puan ve yanlışları tekrar etme.
+- **Kişisel ilerleme:** Quiz geçmişi ve bazı öğrenme işaretleri tarayıcıda yerel olarak saklanır; sunucu hesabı gerekmez.
+
+Site eğitim amaçlıdır; klinik tanı veya tedavi önerisi vermez. Anatomi içeriklerini öğrenirken sayfalarda belirtilen kaynakları da kontrol et.
 
 ## Çalıştırma
 
-- `index.html` dosyasını tarayıcıda aç.
-- Yerel dosyaları tarayıcı kısıtları nedeniyle açamıyorsan, Python 3 kuruluysa proje klasöründe `py -m http.server 8000` komutunu çalıştır ve `http://localhost:8000` adresini aç.
-- Node.js, npm, ücretli servis, API anahtarı veya derleme adımı gerekmez.
+1. `index.html` dosyasını tarayıcıda aç.
+2. Yerel dosya kısıtlaması nedeniyle bir özellik çalışmazsa Python 3 kuruluysa proje klasöründe `py -m http.server 8000` komutunu çalıştır.
+3. Tarayıcıda `http://localhost:8000` adresini aç.
 
-## Kaynaklar ve kullanım
+Node.js yalnızca bazı geliştirici kontrolleri için kullanılır. Siteyi derlemek veya ücretli servis bağlamak gerekmez.
 
-Kart ve quiz açıklamaları Türkçe olarak özgün biçimde özetlenmiştir; OpenStax sayfaları her kartta ve sayfa altında kaynak olarak verilir; eklem adlandırmaları FIPAT Terminologia Anatomica 2 ile karşılaştırılmıştır. OpenStax ders kitabı içeriği CC BY-NC-SA lisanslıdır. Bu projede OpenStax görseli veya uzun metin alıntısı kullanılmadı; projeyi ileride gelir modeline taşırken kaynak lisanslarını ve kullanım koşullarını ayrıca incele.
+## Kaynaklar ve lisans
 
-## Kontroller
+Anatomi sayfalarında kaynak bağlantılarını ve ilgili görsellerin lisans/atıf bilgilerini kontrol et. Proje kaynakları ve ilk lisans notları için `LICENSING.md` dosyasına bak. Kaynakların lisans koşulları farklı olabilir; kod veya içerik için burada hukuki lisans garantisi verilmez.
 
-- `node --check app.js` ve `node --check data.js` başarılı.
-- Node tabanlı etkileşim denetimi 24 terimi, arama ve kategori filtresini, boş sonuç mesajını, 12 soruluk puanlamayı, yanlış soruları tekrar etmeyi, en iyi puanı kaydetmeyi ve yeniden başlatmayı geçti.
-- Bu ortamın tarayıcı güvenlik politikası yerel `file://` sayfalarını açmadı; yerel sunucuyla görsel tarayıcı kontrolü de başlatılamadı. Bu yüzden küçük ekran görünümü ve gerçek tarayıcı erişilebilirlik denetimi henüz görsel olarak doğrulanmadı.
+## Yayınlama
 
-## Dosyalar
+GitHub Pages ile yayınlamak için depo ayarlarında **Settings → Pages → Deploy from a branch** seç; kaynak olarak `main` ve `/(root)` belirleyip kaydet. Yayın tamamlandığında aynı ayarlar sayfasındaki **Visit site** bağlantısıyla gerçek adresi doğrula. Ardından `robots.txt` ve `sitemap.xml` içindeki adreslerin yayın adresiyle eşleştiğini kontrol et. Google Search Console'a siteyi eklemek ve site haritasını göndermek isteğe bağlı sonraki adımdır; bu işlemler dizine eklenmeyi veya sıralamayı garanti etmez.
 
-- `AGENTS.md`: Sonraki geliştirme görevlerinde uygulanacak proje kuralları.
-- `PLANS.md`: Aşamalar, mevcut durum ve kalan yayın kontrolleri.
-- `index.html`, `styles.css`, `app.js`, `data.js`: Statik site ve içeriği.
+## Geliştirme durumu
 
+Güncel kalan işler ve doğrulama notları `PLANS.md` içinde tutulur. Gerçek telefon/tablet tarayıcı görünümü, görsel yüklenmesi ve erişilebilirlik denetimi ayrıca yapılmalıdır.
