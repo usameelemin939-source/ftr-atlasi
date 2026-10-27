@@ -59,6 +59,7 @@
 - [x] Başlangıç, sonlanma, innervasyon ve temel fonksiyon alanları.
 - [x] Ek okuma için OpenStax kas sistemi bağlantıları.
 - [x] 11 kas kartına Wikimedia Commons kaynak/lisans bağlantılı görsel eşleştirmeleri eklendi.
+- [x] CC BY-SA 2.1 Japan lisanslı görseller için doğrudan lisans koşulları bağlantısı eklendi.
 - [ ] Görsellerin gerçek tarayıcıda açılmasını ve her lisans/atıf metnini tek tek doğrula.
 - [ ] Kas başlangıç, sonlanma, innervasyon ve fonksiyonlarını ders kaynaklarıyla ayrıntılı karşılaştır; daha geniş kas kapsamı ekle.
 - [ ] Tarayıcı/telefon görünüm testi.
