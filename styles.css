@@ -158,3 +158,91 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline-color:#168ba2}
 
 /* A clear count-based cover for the full skeletal atlas */
 .bone-count-art{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:#216f91;text-align:center;line-height:1.1}.bone-count-art strong{font-size:clamp(3.2rem,7vw,5.5rem);font-weight:900;letter-spacing:-.08em}.bone-count-art span{font-size:.75rem;font-weight:900;letter-spacing:.16em}.bone-count-art small{margin-top:9px;color:#426783;font-size:.78rem;font-weight:700}
+
+
+/* Premium dark anatomy atlas direction */
+:root{color-scheme:dark;--navy:#e7f2ff;--navy2:#b6d6ef;--ink:#e2edf8;--muted:#9aafc4;--teal:#65e8e0;--teal-dark:#5ee0d6;--pale:#0c1725;--line:#26384b;--white:#111e2d}
+html{background:#09121e}
+body{background:#09121e;color:#e2edf8}
+.site-header{background:rgba(9,18,30,.92);border-bottom-color:#1e3043}
+.brand,.brand-mark{color:#e7f2ff}.brand-mark{background:#15283b;color:#65e8e0}
+.main-nav a{color:#a3b6ca}.main-nav a:hover,.main-nav a:focus-visible{color:#65e8e0}
+.header-cta{background:#65e8e0;color:#07131e}.header-cta span{color:#07131e}
+.dashboard{color:#e2edf8}
+.dashboard-heading h1,.dashboard-section-title h2{color:#eef6ff}
+.dashboard-heading h1 em{color:#65e8e0}
+.dashboard-lead{color:#a1b5c9}
+.today-card{border-color:#294357;background:linear-gradient(135deg,#14283a,#102131)}
+.today-card b{color:#eaf5ff}.today-card p{color:#b5c8d9}.today-card small{color:#91a8bd}
+.today-icon{background:#173f4c;color:#65e8e0}
+.mini-progress,.course-progress{background:#26384b}
+.mini-progress span,.course-progress span{background:linear-gradient(90deg,#3bb5c5,#65e8e0)}
+.course-card{border-color:#24384b;background:#111f2e;box-shadow:0 12px 32px #0003}
+.course-card:hover{border-color:#4d8b99;box-shadow:0 18px 38px #0005}
+.anatomy-art{background:radial-gradient(circle at 50% 50%,#21465a,#14283b 68%)}
+.physiology-art{background:radial-gradient(circle at 50% 50%,#1c4a49,#142a35 70%)}
+.terminology-art{background:radial-gradient(circle at 50% 50%,#40385f,#211f3a 70%)}
+.intro-art{background:radial-gradient(circle at 50% 50%,#5a442b,#30291f 70%)}
+.psycho-art{background:radial-gradient(circle at 50% 50%,#344c78,#1a2942 70%)}
+.art-label,.terminology-art .art-label,.intro-art .art-label,.psycho-art .art-label{color:#b4c8dc}
+.course-art svg{color:#65e8e0}
+.letter-art{color:#c6b5ff}.path-art{color:#f4c889}.path-art span{border-color:#69563b;background:#30291f}
+.people-art i{background:#6586c8}.people-art i:nth-child(2){background:#8aa6e6}
+.people-art i:before{background:#93a9df}.people-art span{background:#6586c8}
+.course-tag,.course-meta b,.text-link{color:#65e8e0}
+.course-card h3{color:#edf6ff}
+.course-card-body>p{color:#a6b8ca}
+.course-meta{color:#9bb0c3}
+.course-card-body>small{color:#85a0b7}
+.dashboard-lower .lower-panel{border-color:#263a4e;background:#101e2d;color:#e2edf8}
+.lower-panel:hover{border-color:#4d8b99;background:#14283a}
+.lower-icon{background:#173f4c;color:#65e8e0}
+.lower-panel b{color:#e7f2ff}.lower-panel small{color:#9bb0c3}.lower-panel>strong{color:#65e8e0}
+.atlas{background:#0c1725}
+.section-head h2,.quiz-intro h2,.study-cta h2{color:#edf6ff}
+.section-head>div>p:last-child{color:#a2b6c9}
+.tools{border-color:#26384b;background:#111f2e}
+.search{border-color:#2a4054;background:#0b1724}
+.search input{color:#edf6ff}.search input::placeholder{color:#7890a6}
+.search kbd{border-color:#2a4054;background:#152536;color:#9cb1c4}
+.chip{background:#17283a;color:#b1c4d6}.chip.active{background:#65e8e0;color:#07131e}
+.results{color:#8ea5ba}.results p:first-child{color:#e5f2ff}
+.term-card{border-color:#26384b;background:#111f2e;box-shadow:0 8px 22px #0002}
+.term-card:hover{border-color:#4d8b99;box-shadow:0 14px 28px #0004}
+.term-category{color:#8da6bb}.term-symbol{background:#173f4c;color:#65e8e0}
+.term-card h3{color:#edf6ff}.term-latin,.term-description{color:#a7bacb}
+.term-source{color:#65e8e0}
+.empty{border-color:#355066;background:#101e2d}.empty h3{color:#edf6ff}.empty p{color:#a7bacb}
+.source-note{color:#8ca3b7}
+.model-section{background:#0b1724;color:#e2edf8}
+.model-section .section-head h2{color:#edf6ff}.model-section .section-head h2 em{color:#65e8e0}
+.model-section .section-head>div>p:last-child,.model-note{color:#a4b8cb}
+.model-tab{border-color:#2b4054;background:#132335;color:#b8cadb}
+.model-tab:hover,.model-tab.is-active{border-color:#65e8e0;background:#173c45;color:#e9ffff}
+.model-viewer{border:1px solid #26384b;border-radius:18px;overflow:hidden;background:#060c13}
+.model-notes{border-color:#26384b;background:#111f2e;color:#dce9f6}
+.model-notes h3{color:#edf6ff}.model-facts,.model-notes li{color:#b3c5d7}
+.model-credit,.model-credit a{color:#65e8e0}
+.study-cta{border-color:#26384b;background:#111f2e}
+.study-cta>div>p:last-child{color:#a4b8cb}
+.footer{border-top:1px solid #26384b;background:#09121e}
+.footer .brand,.footer p,.footer a{color:#a4b8cb}
+.footer .brand-mark{background:#65e8e0;color:#07131e}
+.footer .footer-label{color:#65e8e0}
+.quiz-card{border-color:#26384b;background:#111f2e;color:#e2edf8}
+.quiz-welcome h3,.quiz-result h3{color:#edf6ff}
+.quiz-welcome>p:not(.quiz-kicker),.quiz-result>p{color:#a4b8cb}
+.answer-option{border-color:#2b4054;background:#142335;color:#c2d2e1}
+.answer-option:hover:not(:disabled){border-color:#65e8e0;background:#17313d}
+.answer-letter{background:#203449;color:#b8cadb}
+.answer-option.answer-correct{border-color:#3aa88c;background:#12372f;color:#b4f7df}
+.answer-option.answer-wrong{border-color:#bd6868;background:#3b2027;color:#ffc6c6}
+.progress{background:#26384b}.progress span{background:#65e8e0}
+.button.primary{background:#65e8e0;color:#07131e;box-shadow:none}
+.button.primary:hover{background:#9af3ed}
+.button.outline{border-color:#3a5268;background:transparent;color:#dce9f6}
+.button.outline:hover{background:#1a2c3e}
+.daily-plan-complete{border-color:#355066;background:#142538;color:#dce9f6}
+.daily-plan-complete:disabled{background:#15372f;border-color:#2f7969}
+@media(max-width:620px){.dashboard-heading h1{font-size:2.25rem}.section-pad{padding-block:54px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
