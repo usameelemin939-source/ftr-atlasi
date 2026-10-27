@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09131f">
+<meta name="description" content="FTR Atlası anatomi öğrenme asistanı: Türkçe-Latince kavramları öğren, sorularla tekrar yap.">
+<title>Anatomi Öğrenme Asistanı | FTR Atlası</title>
+<style>
+:root{color-scheme:dark;--bg:#08111d;--panel:#101e2d;--panel2:#142538;--line:#26394b;--text:#edf5fc;--muted:#9db0c2;--cyan:#48d9e8;--orange:#ffad69;--good:#8ce3bd}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#12334a 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(1050px,calc(100% - 28px));margin:auto}.top{border-bottom:1px solid var(--line);background:#08111ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-weight:900;color:var(--text);text-decoration:none;letter-spacing:.02em}.brand span{color:var(--cyan)}.nav a:last-child{color:var(--cyan);text-decoration:none}.hero{padding:38px 0 20px}.eyebrow{font-size:.76rem;font-weight:850;letter-spacing:.16em;color:var(--cyan)}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin:.35em 0}p{margin:.5em 0}.lead{max-width:720px;color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.8fr);gap:16px;align-items:start}.panel{background:linear-gradient(160deg,#132538,#0e1a28);border:1px solid var(--line);border-radius:18px;overflow:hidden}.panel-head{padding:17px 18px;border-bottom:1px solid var(--line)}.panel-head h2{font-size:1.05rem;margin:0}.panel-head p{color:var(--muted);font-size:.9rem}.chat-log{min-height:260px;max-height:490px;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}.msg{max-width:94%;border:1px solid var(--line);background:#172a3d;border-radius:13px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user{align-self:flex-end;background:#123640;border-color:#1d6570}.msg small{display:block;color:var(--cyan);font-weight:800;margin-bottom:5px}.composer{padding:13px;border-top:1px solid var(--line)}textarea{width:100%;resize:vertical;min-height:84px;max-height:200px;border-radius:12px;border:1px solid #3a5063;background:#08131f;color:var(--text);font:inherit;padding:12px}button{font:inherit;cursor:pointer}.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px}.button{border:1px solid var(--line);border-radius:10px;padding:9px 13px;background:#172a3d;color:var(--text)}.button.primary{background:var(--cyan);border-color:var(--cyan);color:#06131d;font-weight:850}.button:disabled{opacity:.55;cursor:not-allowed}.hint{font-size:.78rem;color:var(--muted)}.quick{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px}.quick button{border:1px solid #2c485a;background:#102638;color:#dffaff;border-radius:999px;padding:7px 10px;font-size:.85rem}.side{padding:17px}.side h2{font-size:1rem;margin:0 0 10px}.side p,.side li{font-size:.9rem;color:var(--muted)}.side ul{padding-left:20px}.status{border:1px solid #5e492d;background:#2b2419;color:#ffdda9;border-radius:12px;padding:11px 12px;font-size:.85rem;margin-bottom:15px}.status.ready{border-color:#27604c;background:#102b25;color:var(--good)}.topic{border-top:1px solid var(--line);padding:13px 0}.topic b{display:block}.topic a{color:var(--cyan);font-size:.9rem}.foot{color:var(--muted);font-size:.82rem;padding:24px 0 40px}.error{color:#ffb8b8;font-size:.88rem}@media(max-width:760px){.layout{grid-template-columns:1fr}.hero{padding-top:26px}.chat-log{min-height:220px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap nav"><a class="brand" href="index.html">FTR <span>ATLASI</span></a><a href="index.html">← Ana atlasa dön</a></div></header>
+<main class="wrap">
+<section class="hero"><p class="eyebrow">ANATOMİYİ ANLA · KENDİNİ DENE</p><h1>Öğrenme asistanın.</h1><p class="lead">Bir anatomik terim sor, kısa açıklama al veya hızlı tekrar başlat. Türkçe ve Latince adları birlikte çalış. Bu ilk sürüm kaynaklı yerel yanıtlarla çalışır; gerçek üretken AI bağlantısı yapılandırılırsa aynı ekranda kullanılabilir.</p></section>
+<div class="layout">
+<section class="panel" aria-label="Anatomi sohbeti"><div class="panel-head"><h2>Çalışma sohbeti</h2><p>Önce temel kavramlar. Klinik karar veya kişiye özel tedavi önerisi vermez.</p></div>
+<div id="chat-log" class="chat-log" aria-live="polite"><div class="msg"><small>FTR ÖĞRENME ASİSTANI</small>Selam! Femur, tibia, kaslar, eklemler veya anatomik yönler hakkında sorabilirsin. İstersen aşağıdaki örneklerden birini seç. Bu sürümde cevaplar yerel eğitim içeriğine dayanır.</div></div>
+<div class="quick" aria-label="Örnek sorular"><button type="button" data-prompt="Femur nedir ve hangi eklemlere katılır?">Femur nedir?</button><button type="button" data-prompt="Proksimal ve distal farkı nedir?">Proksimal / distal</button><button type="button" data-prompt="Quadriceps femoris ne yapar?">Quadriceps</button><button type="button" data-prompt="Sinovyal eklem nedir?">Sinovyal eklem</button></div>
+<form id="chat-form" class="composer"><label for="question"><b>Sorunu yaz</b></label><textarea id="question" maxlength="1200" placeholder="Örn. Femur başı ile asetabulum arasındaki ilişki nedir?" required></textarea><div class="actions"><span class="hint">En fazla 1200 karakter</span><button id="send" class="button primary" type="submit">Soruyu yanıtla ↗</button></div><p id="error" class="error" hidden></p></form>
+</section>
+<aside class="panel side"><div class="status" id="mode-status">Yerel öğrenme modu aktif. Gerçek AI API bağlantısı henüz yapılandırılmadı.</div><h2>Nasıl çalışır?</h2><ul><li>Türkçe ve Latince terimleri birlikte gör.</li><li>Önce kısa tanım, sonra klinik açıdan neden önemli olduğunu öğren.</li><li>Bir yanıt yeterli değilse soruyu daha belirgin yaz.</li></ul><div class="topic"><b>3B anatomi</b><p>Mevcut kemik modellerini atlas sayfasında açıp döndürebilirsin.</p><a href="index.html#3d-anatomi">3B kemik modellerine git →</a></div><div class="topic"><b>Ders Merkezi</b><p>Kısa ders başlıkları ve tekrar konuları.</p><a href="dersler.html">Ders Merkezi'ni aç →</a></div><div class="topic"><b>Önemli not</b><p>Bu eğitim aracıdır; tanı, tedavi planı veya hocanın ders materyalinin yerine geçmez. Cevapları ders kaynağınla karşılaştır.</p></div></aside>
+</div><footer class="foot">FTR Atlası · Anatomi Öğrenme Asistanı · Yerel mod cevapları sınırlı bir eğitim sözlüğüne dayanır. Gerçek AI için güvenli sunucu tarafı bağlantısı gerekir.</footer>
+</main>
+<script>
+(() => {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const log = $("#chat-log"), form = $("#chat-form"), input = $("#question"), send = $("#send"), error = $("#error");
+  const facts = [
+    {keys:["femur","uyluk kemiği"],title:"Femur — uyluk kemiği",body:"Femur, uyluğun tek kemiğidir ve vücudun en uzun kemiğidir. Proksimalde femur başı asetabulumla eklemleşerek kalça eklemine katılır; distal ucu tibia ve patella ile ilişkili olarak diz ekleminin oluşumuna katılır.",memory:"Hatırlama: femur başı kalça tarafında, kondiller diz tarafındadır."},
+    {keys:["tibia","kaval kemiği"],title:"Tibia — kaval kemiği",body:"Tibia, bacağın medialinde bulunan ve alt ekstremitede yük taşımaya önemli katkı sağlayan kemiktir. Diz ve ayak bileği eklemlerine katılır.",memory:"Hatırlama: tibia içte; fibula dıştadır."},
+    {keys:["fibula","kamış kemiği"],title:"Fibula — kamış kemiği",body:"Fibula, bacağın lateral tarafındaki daha ince kemiktir. Tibia kadar ağırlık taşımaz; distal ucu lateral malleolü, yani ayak bileğinin dış çıkıntısını oluşturur.",memory:"Hatırlama: fibula dış tarafta."},
+    {keys:["quadriceps","dört başlı"],title:"Quadriceps femoris — dört başlı uyluk kası",body:"Quadriceps femoris uyluğun ön bölümündeki kas grubudur ve diz ekstansiyonunda (dizi açma) temel rol oynar. Patella ve patellar bağ üzerinden kuvvet aktarımına katılır.",memory:"FTR bağlantısı: oturup dizini düzleştirirken quadriceps etkinleşir."},
+    {keys:["biceps brachii","biceps","iki başlı kol"],title:"Biceps brachii — iki başlı kol kası",body:"Biceps brachii dirsek fleksiyonuna (dirseği bükme) ve önkol supinasyonuna (avuç içini öne/yukarı çevirmeye) katkı sağlar. Etkisi dirsek ve önkol pozisyonuna göre değişebilir.",memory:"Hatırlama: biceps sadece dirsek fleksörü değildir; supinasyona da yardım eder."},
+    {keys:["triceps","üç başlı"],title:"Triceps brachii — üç başlı kol kası",body:"Triceps brachii dirsek ekstansiyonunun (dirseği açma) başlıca kasıdır. Uzun başı omuz eklemini de geçtiği için omuz hareketlerine de katkıda bulunur.",memory:"Hatırlama: triceps = dirsek ekstansiyonu."},
+    {keys:["sinovyal","synovial"],title:"Sinovyal eklem",body:"Sinovyal eklemlerde kemiklerin eklem yüzleri arasında eklem boşluğu bulunur. Eklem kıkırdağı, kapsül ve sinovyal zar temel yapılardandır. Eklem türü ve hareketi yalnızca bir benzetmeyle tam açıklanamaz.",memory:"Örnek: diz, kalça ve omuz sinovyal eklemlerdir."},
+    {keys:["proksimal","proximal","distal"],title:"Proksimal ve distal",body:"Proksimal, uzvun başlangıcına veya gövdeye daha yakın konumu; distal ise daha uzak konumu anlatır. Örneğin diz, ayak bileğine göre proksimal; ayak bileği dize göre distaldir.",memory:"Bir uzuv üzerinde karşılaştırma yap: gövdeye yakın = proksimal."},
+    {keys:["medial","lateral"],title:"Medial ve lateral",body:"Medial, vücudun orta çizgisine daha yakın; lateral ise orta çizgiden daha uzak konum demektir. Anatomik pozisyonda radius başparmak tarafında (lateral), ulna küçük parmak tarafında (medial) yer alır.",memory:"Yönleri standart anatomik pozisyona göre tarif et."},
+    {keys:["fleksiyon","flexion","ekstansiyon","extension"],title:"Fleksiyon ve ekstansiyon",body:"Fleksiyon çoğunlukla eklem açısını azaltan bükme hareketi; ekstansiyon ise açıyı artıran düzleştirme hareketidir. Bazı vücut bölgelerinde hareketin tanımı anatomik bölgeye göre özelleşir.",memory:"Örnek: dirseği bükmek fleksiyon, dirseği açmak ekstansiyondur."},
+    {keys:["kalça eklemi","asetabulum","acetabulum"],title:"Kalça eklemi — articulatio coxae",body:"Kalça eklemi, femur başı (caput femoris) ile leğen kemiğindeki asetabulum arasında kurulan sinovyal top-yuva eklemidir. Eklem biçimi hareket açıklığı ve stabilite arasında işlevsel bir denge sağlar.",memory:"Femur başı + asetabulum = kalça ekleminin kemik eklemleşmesi."},
+    {keys:["omuz eklemi","glenohumeral"],title:"Omuz eklemi — articulatio glenohumeralis",body:"Omuzun glenohumeral eklemi, humerus başı ile scapuladaki glenoid boşluk arasında kurulan sinovyal top-yuva eklemidir. Geniş hareket açıklığına sahiptir; stabilite kaslar, kapsül ve bağlar gibi yapılara bağlıdır.",memory:"Top-yuva eklem, çok eksenli hareketlere izin verir."}
+  ];
+  const normalize = (s) => s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i");
+  function addMessage(who, label, text) { const el=document.createElement("div");el.className="msg"+(who==="user"?" user":"");const small=document.createElement("small");small.textContent=label;const body=document.createElement("div");body.textContent=text;el.append(small,body);log.append(el);log.scrollTop=log.scrollHeight; }
+  function localAnswer(question) {
+    const q=normalize(question);
+    const matches=facts.map(f=>({f,score:f.keys.reduce((n,k)=>n+(q.includes(normalize(k))?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+    if(matches.length){const f=matches[0].f;return f.title+"\n\n"+f.body+"\n\nHatırlama ipucu: "+f.memory+"\n\nİstersen bu yapının komşuluklarını, hareketini veya Türkçe-Latince terimlerini ayrı ayrı sor.";}
+    if(/merhaba|selam|hey/.test(q))return "Selam! Bir kemik, kas, eklem veya yön terimi sor. Örneğin “Femur nedir?” ya da “Medial ile lateral arasındaki fark nedir?”";
+    if(/fizyoterapi|ftr/.test(q))return "Fizyoterapi ve rehabilitasyon; hareket, işlev ve katılımı değerlendirme ve destekleme alanıdır. Hangi anatomi yapısı veya temel kavram üzerinden ilerleyelim?";
+    return "Bu yerel sürümde bu soruya özel, doğrulanmış bir yanıtım yok. Şimdilik femur, tibia, fibula, quadriceps, biceps brachii, triceps brachii, sinovyal eklem, proksimal-distal, medial-lateral, fleksiyon-ekstansiyon, kalça veya omuz eklemi hakkında soru sorabilirsin. Gerçek üretken AI bağlantısı henüz yapılandırılmadı.";
+  }
+  async function answer(question) {
+    // An AI endpoint can be configured by the site owner without placing provider secrets in browser code.
+    const endpoint = window.FTR_AI_ENDPOINT;
+    if (typeof endpoint === "string" && endpoint.startsWith("/") && !endpoint.startsWith("//")) {
+      const response = await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question,language:"tr",context:"FTR Atlası, FTR 1. sınıf anatomi eğitim asistanı. Yanıtları doğru, kısa ve Türkçe-Latince ver; klinik tanı veya kişiye özel tedavi önerme."})});
+      if(!response.ok) throw new Error("AI servisi yanıt vermedi ("+response.status+").");
+      const data=await response.json();
+      if(typeof data.answer!=="string"||!data.answer.trim()) throw new Error("AI servisinden geçerli yanıt gelmedi.");
+      return data.answer;
+    }
+    return localAnswer(question);
+  }
+  async function submit(question) {
+    question=question.trim();if(!question)return;
+    error.hidden=true;addMessage("user","SEN",question);input.value="";send.disabled=true;send.textContent="Yanıt hazırlanıyor…";
+    try{const result=await answer(question);addMessage("assistant","FTR ÖĞRENME ASİSTANI",result);}
+    catch(e){error.textContent=e.message||"Yanıt alınamadı. Biraz sonra tekrar dene.";error.hidden=false;addMessage("assistant","BAĞLANTI UYARISI","Şu anda yanıt oluşturulamadı. Sorunu tekrar deneyebilir veya yerel öğrenme modunu kullanabilirsin.");}
+    finally{send.disabled=false;send.textContent="Soruyu yanıtla ↗";input.focus();}
+  }
+  form.addEventListener("submit",e=>{e.preventDefault();submit(input.value);});
+  document.querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>submit(b.dataset.prompt)));
+  if(typeof window.FTR_AI_ENDPOINT==="string"&&window.FTR_AI_ENDPOINT.startsWith("/")&&!window.FTR_AI_ENDPOINT.startsWith("//")){$("#mode-status").textContent="AI uç noktası tanımlı. Yanıtlar sunucu tarafındaki servisten istenecek." ;$("#mode-status").classList.add("ready");}
+})();
+</script>
+</body>
+</html>
