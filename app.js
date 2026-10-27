@@ -189,6 +189,76 @@
     fibula: {url:"https://sketchfab.com/models/5f239617db8d4d2eaaf13b8616acf70e/embed?autostart=0&ui_theme=dark",name:"Kamış kemiği",latin:"Fibula",source:"https://sketchfab.com/3d-models/human-fibula-5f239617db8d4d2eaaf13b8616acf70e",facts:["Alt bacağın dış tarafında yer alır.","Tibia kadar ağırlık taşımaz.","Ayak bileğinin dış tarafındaki çıkıntıya katılır."],quiz:{question:"Dış malleol hangi kemiğin distal ucuyla oluşur?",options:["Femur","Tibia","Fibula"],answer:2,explanation:"Dış malleol, fibulanın distal ucundaki kemik çıkıntısıdır."}},
     foot: {url:"https://sketchfab.com/models/3741b9acf74b4206aa6fd9dbb20ad583/embed?autostart=0&ui_theme=dark",name:"Ayak kemikleri",latin:"Ossa pedis",source:"https://sketchfab.com/3d-models/human-foot-bones-3741b9acf74b4206aa6fd9dbb20ad583",facts:["Ayak kemikleri tarsal, metatarsal ve falanks kemiklerine ayrılır.","Yedi tarsal kemik ayak bileği ve arka ayak bölgesinde bulunur.","Her ayakta beş metatarsal kemik vardır."],quiz:{question:"Bir ayakta kaç tarsal kemik bulunur?",options:["5","7","14"],answer:1,explanation:"Her ayakta 7 tarsal kemik bulunur; bunlar arka ayak ve orta ayak bölgesinin kemikleridir."}}
   };
+  let activeSketchfabApi = null;
+  let sketchfabLoadToken = 0;
+  function setModelInteractionStatus(message, state = "") {
+    const status = document.querySelector("#model-interaction-status");
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.state = state;
+  }
+  function loadInteractiveModel(item) {
+    const frame = document.querySelector("#model-frame");
+    if (!frame || !item) return;
+    const match = item.url.match(/models\/([^/]+)\/embed/);
+    if (!match || typeof window.Sketchfab !== "function") {
+      frame.src = item.url;
+      setModelInteractionStatus("Etkileşimli seçim yüklenemedi; standart 3B görüntüleyici açılıyor.", "fallback");
+      return;
+    }
+    const token = ++sketchfabLoadToken;
+    activeSketchfabApi = null;
+    frame.title = item.name + " — " + item.latin + " 3B modeli";
+    setModelInteractionStatus("3B model yükleniyor…", "loading");
+    const client = new window.Sketchfab(frame);
+    client.init(match[1], {
+      autostart: 0,
+      ui_theme: "dark",
+      success: function (api) {
+        if (token !== sketchfabLoadToken) return;
+        activeSketchfabApi = api;
+        api.addEventListener("viewerready", function () {
+          if (token !== sketchfabLoadToken) return;
+          try {
+            api.setHighlightOptions({
+              outlineWidth: 4,
+              outlineColor: [0, 0.83, 1, 1],
+              outlineDuration: 300,
+              highlightColor: [0, 0.83, 1, 1],
+              highlightDuration: 300
+            });
+          } catch (error) {
+            // Highlighting can be unavailable for some embedded model configurations.
+          }
+          setModelInteractionStatus("Model hazır. 3B modelin üzerindeki bir parçaya tıkla; destekleniyorsa parça vurgulanır. Seçim, anatomik adı otomatik olarak belirlemeyebilir.", "ready");
+          api.addEventListener("click", function (info) {
+            if (token !== sketchfabLoadToken || !info || !info.instanceID) {
+              setModelInteractionStatus("Model üzerinde seçilebilir bir parça bulunamadı. Başka bir noktaya tıkla.", "idle");
+              return;
+            }
+            let materialName = info.material && (info.material.name || info.material.displayName);
+            try {
+              if (info.material) api.highlightMaterial(info.material);
+            } catch (error) {
+              // Keep the selection feedback available even if the model disallows highlighting.
+            }
+            const label = materialName ? "Malzeme: " + materialName : "Model parçası seçildi (parça kimliği " + info.instanceID + ").";
+            setModelInteractionStatus(label + " Not: bu, femur başı gibi anatomik bir yapının otomatik tanımlandığı anlamına gelmez.", "selected");
+          }, { pick: "slow" });
+          api.getNodeMap(function (error, nodes) {
+            if (token !== sketchfabLoadToken || error || !Array.isArray(nodes)) return;
+            // Node names are available for future model-specific anatomy mapping.
+          });
+        });
+        api.start();
+      },
+      error: function () {
+        if (token !== sketchfabLoadToken) return;
+        activeSketchfabApi = null;
+        setModelInteractionStatus("Sketchfab etkileşimli API açılamadı. Sayfayı yenileyebilir veya modeli yeni sekmede açabilirsin.", "error");
+      }
+    });
+  }
   function renderModelCheck(key) {
     const quiz = modelData[key]?.quiz;
     const question = document.querySelector("#model-check-question");
@@ -219,12 +289,12 @@
     });
   }
   renderModelCheck("femur");
+  loadInteractiveModel(modelData.femur);
   document.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
     const item = modelData[button.dataset.model]; if (!item) return;
     renderModelCheck(button.dataset.model);
     renderBoneStructure(button.dataset.model);
-    document.querySelector("#model-frame").src = item.url;
-    document.querySelector("#model-frame").title = item.name + " — " + item.latin + " 3B modeli";
+    loadInteractiveModel(item);
     document.querySelector("#model-name").textContent = item.name;
     document.querySelector("#model-latin").textContent = item.latin;
     const facts = document.querySelector("#model-facts"); facts.replaceChildren();
