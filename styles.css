@@ -401,3 +401,20 @@ body{background:radial-gradient(ellipse at 50% -18%,#173247 0,transparent 43%),#
 .sources a{color:#b4c7d8}
 @media(max-width:680px){.dashboard{padding-top:18px}.dashboard-heading{border-radius:19px}.dashboard-section-title{margin-top:26px}.main-nav a{color:#afc2d4}}
 @media(prefers-reduced-motion:reduce){.map-step,.term-card{transition:none}}
+
+
+/* Quick recall for the selected 3D bone model */
+.model-quick-check{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.8fr);gap:12px 24px;align-items:center;margin-top:16px;padding:20px;border:1px solid #e3d49a;border-radius:15px;background:linear-gradient(120deg,#fffdf3,#fff)}
+.model-quick-check .quiz-kicker{margin:0 0 5px;color:#856300;font-size:.65rem;font-weight:850;letter-spacing:.12em}
+.model-quick-check h3{margin:0;color:#171717;font-size:1.1rem}
+.model-quick-check #model-check-question{margin:6px 0 0;color:#5b5b54;font-size:.83rem;line-height:1.6}
+.model-check-options{display:grid;gap:7px}
+.model-check-option{width:100%;padding:10px 12px;border:1px solid #deded8;border-radius:9px;background:#fff;color:#222;text-align:left;font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}
+.model-check-option:hover:not(:disabled){border-color:#c49a00;background:#fff9db}
+.model-check-option:disabled{cursor:default;opacity:1}
+.model-check-option.is-correct{border-color:#32866a;background:#e9f8ef;color:#155a42}
+.model-check-option.is-wrong{border-color:#c16b6b;background:#fff0f0;color:#8b2929}
+.model-check-feedback{grid-column:1/-1;margin:0;color:#6d6b60;font-size:.76rem;line-height:1.65}
+.model-check-feedback.is-correct{color:#17654a}
+.model-check-feedback.is-wrong{color:#8b2929}
+@media(max-width:650px){.model-quick-check{grid-template-columns:1fr;gap:12px;padding:16px}.model-check-feedback{grid-column:auto}}
