@@ -184,13 +184,44 @@
     if (!isReview && score > readBest()) { try { localStorage.setItem("ftr-atlasi-best-score", score); } catch { /* Depolama kapalı olsa da quiz kullanılabilir. */ } showBest(); }
   }
   const modelData = {
-    femur: {url:"https://sketchfab.com/models/a9c1f1a88b104c3fbfe975fa10b31b31/embed?autostart=0&ui_theme=dark",name:"Uyluk kemiği",latin:"Femur",source:"https://sketchfab.com/3d-models/human-femur-a9c1f1a88b104c3fbfe975fa10b31b31",facts:["İnsan vücudunun en uzun kemiğidir.","Proksimal ucu kalça eklemine katılır.","Distal ucu diz ekleminin oluşumuna katılır."]},
-    tibia: {url:"https://sketchfab.com/models/7c1979d6127749bc80a9d9276d24edcd/embed?autostart=0&ui_theme=dark",name:"Kaval kemiği",latin:"Tibia",source:"https://sketchfab.com/3d-models/human-tibia-7c1979d6127749bc80a9d9276d24edcd",facts:["Alt bacağın iç tarafında bulunur.","Alt bacağın temel ağırlık taşıyan kemiğidir.","Diz ve ayak bileği eklemlerine katılır."]},
-    fibula: {url:"https://sketchfab.com/models/5f239617db8d4d2eaaf13b8616acf70e/embed?autostart=0&ui_theme=dark",name:"Kamış kemiği",latin:"Fibula",source:"https://sketchfab.com/3d-models/human-fibula-5f239617db8d4d2eaaf13b8616acf70e",facts:["Alt bacağın dış tarafında yer alır.","Tibia kadar ağırlık taşımaz.","Ayak bileğinin dış tarafındaki çıkıntıya katılır."]},
-    foot: {url:"https://sketchfab.com/models/3741b9acf74b4206aa6fd9dbb20ad583/embed?autostart=0&ui_theme=dark",name:"Ayak kemikleri",latin:"Ossa pedis",source:"https://sketchfab.com/3d-models/human-foot-bones-3741b9acf74b4206aa6fd9dbb20ad583",facts:["Ayak kemikleri tarsal, metatarsal ve falanks kemiklerine ayrılır.","Yedi tarsal kemik ayak bileği ve arka ayak bölgesinde bulunur.","Her ayakta beş metatarsal kemik vardır."]}
+    femur: {url:"https://sketchfab.com/models/a9c1f1a88b104c3fbfe975fa10b31b31/embed?autostart=0&ui_theme=dark",name:"Uyluk kemiği",latin:"Femur",source:"https://sketchfab.com/3d-models/human-femur-a9c1f1a88b104c3fbfe975fa10b31b31",facts:["İnsan vücudunun en uzun kemiğidir.","Proksimal ucu kalça eklemine katılır.","Distal ucu diz ekleminin oluşumuna katılır."],quiz:{question:"İnsan vücudunun en uzun kemiği hangisidir?",options:["Femur","Tibia","Fibula"],answer:0,explanation:"Femur, uyluk kemiğidir ve insan vücudunun en uzun kemiğidir."}},
+    tibia: {url:"https://sketchfab.com/models/7c1979d6127749bc80a9d9276d24edcd/embed?autostart=0&ui_theme=dark",name:"Kaval kemiği",latin:"Tibia",source:"https://sketchfab.com/3d-models/human-tibia-7c1979d6127749bc80a9d9276d24edcd",facts:["Alt bacağın iç tarafında bulunur.","Alt bacağın temel ağırlık taşıyan kemiğidir.","Diz ve ayak bileği eklemlerine katılır."],quiz:{question:"Alt bacağın temel ağırlık taşıyan kemiği hangisidir?",options:["Fibula","Tibia","Talus"],answer:1,explanation:"Tibia alt bacağın iç tarafında bulunur ve ağırlık aktarımında temel rol oynar."}},
+    fibula: {url:"https://sketchfab.com/models/5f239617db8d4d2eaaf13b8616acf70e/embed?autostart=0&ui_theme=dark",name:"Kamış kemiği",latin:"Fibula",source:"https://sketchfab.com/3d-models/human-fibula-5f239617db8d4d2eaaf13b8616acf70e",facts:["Alt bacağın dış tarafında yer alır.","Tibia kadar ağırlık taşımaz.","Ayak bileğinin dış tarafındaki çıkıntıya katılır."],quiz:{question:"Dış malleol hangi kemiğin distal ucuyla oluşur?",options:["Femur","Tibia","Fibula"],answer:2,explanation:"Dış malleol, fibulanın distal ucundaki kemik çıkıntısıdır."}},
+    foot: {url:"https://sketchfab.com/models/3741b9acf74b4206aa6fd9dbb20ad583/embed?autostart=0&ui_theme=dark",name:"Ayak kemikleri",latin:"Ossa pedis",source:"https://sketchfab.com/3d-models/human-foot-bones-3741b9acf74b4206aa6fd9dbb20ad583",facts:["Ayak kemikleri tarsal, metatarsal ve falanks kemiklerine ayrılır.","Yedi tarsal kemik ayak bileği ve arka ayak bölgesinde bulunur.","Her ayakta beş metatarsal kemik vardır."],quiz:{question:"Bir ayakta kaç tarsal kemik bulunur?",options:["5","7","14"],answer:1,explanation:"Her ayakta 7 tarsal kemik bulunur; bunlar arka ayak ve orta ayak bölgesinin kemikleridir."}}
   };
+  function renderModelCheck(key) {
+    const quiz = modelData[key]?.quiz;
+    const question = document.querySelector("#model-check-question");
+    const options = document.querySelector("#model-check-options");
+    const feedback = document.querySelector("#model-check-feedback");
+    if (!quiz || !question || !options || !feedback) return;
+    question.textContent = quiz.question;
+    feedback.textContent = "Bir yanıt seç; doğru yanıt ve kısa açıklama burada görünecek.";
+    feedback.className = "model-check-feedback";
+    options.replaceChildren();
+    quiz.options.forEach((label, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "model-check-option";
+      button.textContent = label;
+      button.addEventListener("click", () => {
+        options.querySelectorAll("button").forEach((option, optionIndex) => {
+          option.disabled = true;
+          if (optionIndex === quiz.answer) option.classList.add("is-correct");
+          else if (optionIndex === index) option.classList.add("is-wrong");
+        });
+        const correct = index === quiz.answer;
+        feedback.textContent = (correct ? "Doğru. " : "Henüz değil. Doğru yanıt: " + quiz.options[quiz.answer] + ". ") + quiz.explanation;
+        feedback.classList.toggle("is-correct", correct);
+        feedback.classList.toggle("is-wrong", !correct);
+      });
+      options.append(button);
+    });
+  }
+  renderModelCheck("femur");
   document.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
     const item = modelData[button.dataset.model]; if (!item) return;
+    renderModelCheck(button.dataset.model);
     document.querySelector("#model-frame").src = item.url;
     document.querySelector("#model-frame").title = item.name + " — " + item.latin + " 3B modeli";
     document.querySelector("#model-name").textContent = item.name;
