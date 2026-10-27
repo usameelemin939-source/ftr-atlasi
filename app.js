@@ -39,6 +39,7 @@
   document.querySelector("#clear-search").addEventListener("click", () => { search.value = ""; activeFilter = "all"; renderTerms(); search.focus(); });
   document.addEventListener("keydown", (event) => { if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) { event.preventDefault(); search.focus(); } });
   renderTerms();
+  renderWeakTopicRecommendation();
 
   const welcome = document.querySelector("#quiz-welcome"), play = document.querySelector("#quiz-play"), result = document.querySelector("#quiz-result");
   const answers = document.querySelector("#answer-list"), feedback = document.querySelector("#answer-feedback"), next = document.querySelector("#next-question");
@@ -99,6 +100,61 @@
     hintButton.disabled = true; feedback.hidden = false; feedback.classList.toggle("wrong", !correct); feedback.append(document.createTextNode(`${correct ? "Doğru! " : "Birlikte hatırlayalım. "}${item.explanation} `));
     
     next.textContent = index === pool.length - 1 ? "Sonucu gör →" : "Sonraki soru →"; next.hidden = false;
+  }
+  function renderWeakTopicRecommendation() {
+    const card = document.querySelector("#weak-topic-card");
+    if (!card) return;
+    const copy = document.querySelector("#weak-topic-copy");
+    const stats = document.querySelector("#weak-topic-stats");
+    const link = document.querySelector("#weak-topic-link");
+    const topicNames = {
+      direction: "Anatomik yön ve konum",
+      bones: "Kemikler ve iskelet",
+      muscle: "Kaslar ve hareket",
+      joints: "Eklemler"
+    };
+    try {
+      const saved = JSON.parse(localStorage.getItem("ftraQuizHistory") || "[]");
+      const history = Array.isArray(saved) ? saved.slice(-5) : [];
+      const totals = new Map();
+      history.forEach(attempt => {
+        if (!Array.isArray(attempt.topics)) return;
+        attempt.topics.forEach(topic => {
+          if (!topicNames[topic.key] || !Number.isFinite(topic.correct) || !Number.isFinite(topic.total) || topic.total <= 0) return;
+          const current = totals.get(topic.key) || {correct: 0, total: 0};
+          current.correct += Math.max(0, topic.correct);
+          current.total += Math.max(0, topic.total);
+          totals.set(topic.key, current);
+        });
+      });
+      const candidates = [...totals.entries()].filter(([, value]) => value.total >= 2)
+        .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total));
+      if (!candidates.length) {
+        card.hidden = false;
+        copy.textContent = history.length
+          ? "Bir konuyu önceliklendirmek için aynı başlıkta en az iki soruluk sonuç biriksin. Test çözmeye devam et."
+          : "Bir testi bitir; sonuçlarına göre en çok tekrar gerektiren konuyu burada önereceğim.";
+        stats.textContent = "Son 5 test değerlendirilir; veriler bu tarayıcıda kalır.";
+        link.href = "dersler.html";
+        link.textContent = "Ders Merkezi'ni aç →";
+        return;
+      }
+      const [key, value] = candidates[0];
+      const percent = Math.round(value.correct / value.total * 100);
+      card.hidden = false;
+      copy.textContent = percent < 70
+        ? topicNames[key] + " şu an en çok tekrar gerektiren konun. Önce kısa konu tekrarını yap, sonra yeniden test çöz."
+        : topicNames[key] + " diğer başlıklara göre biraz daha fazla pratik isteyebilir. Kısa bir tekrar ile bilgini sağlamlaştır.";
+      stats.textContent = "Son " + history.length + " testte: " + value.correct + " / " + value.total + " doğru (" + percent + "%).";
+      link.href = "dersler.html?topic=" + encodeURIComponent(key);
+      link.textContent = topicNames[key] + " konusunu tekrar et →";
+    } catch {
+      card.hidden = false;
+      copy.textContent = "Test geçmişine şu anda erişilemiyor. Ders Merkezi'nden bir konu seçip tekrar yapabilirsin.";
+      stats.textContent = "İlerleme bilgileri yalnızca bu tarayıcıda saklanır.";
+      link.href = "dersler.html";
+      link.textContent = "Ders Merkezi'ni aç →";
+    }
   }
   function saveHomepageQuizHistory() {
     if (isReview || quizAnswers.length !== pool.length || !pool.length) return;
