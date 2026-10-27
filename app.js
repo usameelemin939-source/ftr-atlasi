@@ -222,6 +222,7 @@
   document.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
     const item = modelData[button.dataset.model]; if (!item) return;
     renderModelCheck(button.dataset.model);
+    renderBoneStructure(button.dataset.model);
     document.querySelector("#model-frame").src = item.url;
     document.querySelector("#model-frame").title = item.name + " — " + item.latin + " 3B modeli";
     document.querySelector("#model-name").textContent = item.name;
@@ -238,6 +239,59 @@
     shaft: {name:"Femur gövdesi",latin:"Corpus femoris",description:"Femur'un uzun orta bölümüdür. Güçlü kortikal kemiği sayesinde vücut ağırlığının taşınmasına ve yüklerin aktarılmasına katkı verir.",memory:"Gövde = kemiğin uzun orta kısmı."},
     condyles: {name:"Medial ve lateral kondiller",latin:"Condylus medialis et condylus lateralis",description:"Femur'un distal ucundaki iki eklem yüzüdür. Tibianın üst yüzüyle eklemleşerek diz ekleminin femoral bölümünü oluştururlar.",memory:"Kondiller = diz tarafındaki distal eklem yüzleri."}
   };
+  const boneStructureSets = {
+    femur: [
+      {name:"Femur başı",latin:"Caput femoris",description:"Proksimal uçtaki küresel baş, kalça kemiğinin asetabulumu ile eklemleşir.",memory:"Baş = kalça eklemi."},
+      {name:"Femur boynu",latin:"Collum femoris",description:"Femur başını gövdeye bağlayan dar geçiş bölümüdür.",memory:"Boyun = baş ile gövde arasında."},
+      {name:"Büyük trokanter",latin:"Trochanter major",description:"Proksimal dış yandaki belirgin çıkıntıdır; kalça kasları için tutunma alanıdır.",memory:"Trokanter = kas tutunma çıkıntısı."},
+      {name:"Femur gövdesi",latin:"Corpus femoris",description:"Uyluk boyunca uzanan uzun orta bölüm; yük aktarımına katkı verir.",memory:"Gövde = uzun orta bölüm."},
+      {name:"Medial ve lateral kondiller",latin:"Condylus medialis et lateralis",description:"Distal uçtaki eklem yüzleri diz ekleminin femoral tarafına katılır.",memory:"Kondiller = diz tarafı."}
+    ],
+    tibia: [
+      {name:"Tibia kondilleri",latin:"Condylus medialis et lateralis",description:"Proksimal uçtaki iç ve dış eklem yüzleri femur kondilleriyle eklemleşir.",memory:"Proksimal tibia = dizin altındaki eklem yüzü."},
+      {name:"Tibial tüberozite",latin:"Tuberositas tibiae",description:"Ön yüzdeki çıkıntı; patellar ligamentin tutunma yeridir.",memory:"Tüberozite = patellar ligamentin tutunması."},
+      {name:"Tibia gövdesi",latin:"Corpus tibiae",description:"Alt bacağın medial tarafında uzanır ve vücut ağırlığının aktarılmasında önemli rol oynar.",memory:"Tibia = ağırlık taşıyan ana kemik."},
+      {name:"Ön kenar",latin:"Margo anterior",description:"Cilt altında kolayca hissedilebilen keskin ön kenardır.",memory:"Kaval kemiğinin ön kenarı elle hissedilir."},
+      {name:"İç malleol",latin:"Malleolus medialis",description:"Distal tibianın iç taraftaki çıkıntısıdır ve ayak bileğinin medial sınırını oluşturur.",memory:"İç malleol = tibia."}
+    ],
+    fibula: [
+      {name:"Fibula başı",latin:"Caput fibulae",description:"Proksimal uçta, dizin dış tarafında tibia ile komşu olan bölümdür.",memory:"Fibula başı = dizin dış tarafı."},
+      {name:"Fibula boynu",latin:"Collum fibulae",description:"Başın hemen altındaki dar bölümdür; ortak fibular sinir bu çevrede yüzeyelleşir.",memory:"Fibula boynu çevresindeki sinir yaralanmaya açıktır."},
+      {name:"Fibula gövdesi",latin:"Corpus fibulae",description:"Alt bacağın lateral tarafında uzanır; kas tutunmalarına ve ayak bileği stabilitesine katkı verir.",memory:"Fibula = lateral kemik."},
+      {name:"Dış malleol",latin:"Malleolus lateralis",description:"Distal fibulanın ayak bileğinin dış tarafındaki belirgin çıkıntısıdır.",memory:"Dış malleol = fibula."},
+      {name:"Tibia-fibula eklem yüzü",latin:"Facies articularis capitis fibulae",description:"Fibula başındaki eklem yüzü tibianın lateral kondiliyle proksimal tibiofibular eklemi oluşturur.",memory:"Fibula başı tibia ile eklemleşir."}
+    ],
+    foot: [
+      {name:"Talus",latin:"Talus",description:"Ayak bileği ekleminde tibia ve fibula ile eklemleşerek vücut yükünü ayağa aktarır.",memory:"Talus = ayak bileği ekleminin merkezinde."},
+      {name:"Kalkaneus",latin:"Calcaneus",description:"Topuk kemiğidir; Aşil tendonu arka yüzündeki kalkaneal tüberoziteye tutunur.",memory:"Calcaneus = topuk."},
+      {name:"Naviküler kemik",latin:"Os naviculare",description:"Ayağın medial tarafındaki tarsal kemiktir ve medial arkın yapısına katılır.",memory:"Naviculare = medial ayak."},
+      {name:"Küboid kemik",latin:"Os cuboideum",description:"Ayağın lateral tarafında yer alır ve dördüncü-beşinci metatarsal kemiklerle eklemleşir.",memory:"Cuboideum = lateral ayak."},
+      {name:"Metatarsal kemikler",latin:"Ossa metatarsalia I–V",description:"Tarsal kemikler ile parmak falanksları arasında uzanan beş uzun kemiktir.",memory:"Metatarslar = ayak tarak kemikleri."},
+      {name:"Falankslar",latin:"Phalanges digitorum pedis",description:"Ayak parmaklarını oluşturan kemiklerdir; başparmakta iki, diğer parmaklarda genellikle üç falanks bulunur.",memory:"Başparmak 2, diğer parmaklar 3 falanks."}
+    ]
+  };
+  function renderBoneStructure(key, selectedIndex = 0) {
+    const structures = boneStructureSets[key] || boneStructureSets.femur;
+    const options = document.querySelector("#bone-structure-options");
+    if (!options) return;
+    options.replaceChildren();
+    structures.forEach((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "bone-structure-option";
+      button.textContent = item.name;
+      button.setAttribute("aria-pressed", String(index === selectedIndex));
+      button.addEventListener("click", () => renderBoneStructure(key, index));
+      options.append(button);
+    });
+    const item = structures[selectedIndex] || structures[0];
+    document.querySelector("#bone-structure-number").textContent = "YAPI " + String(selectedIndex + 1).padStart(2, "0") + " / " + structures.length;
+    document.querySelector("#bone-structure-name").textContent = item.name;
+    document.querySelector("#bone-structure-latin").textContent = item.latin;
+    document.querySelector("#bone-structure-description").textContent = item.description;
+    document.querySelector("#bone-structure-memory").textContent = "Hatırla: " + item.memory;
+  }
+  renderBoneStructure("femur");
   const structurePanel = document.querySelector("#femur-study");
   function showFemurStructure(key) {
     const item = femurStructures[key];
