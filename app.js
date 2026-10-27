@@ -44,7 +44,7 @@
   const answers = document.querySelector("#answer-list"), feedback = document.querySelector("#answer-feedback"), next = document.querySelector("#next-question");
   const hintButton = document.querySelector("#show-hint"), hintText = document.querySelector("#hint-text");
   const track = document.querySelector("#progress-track"), fill = document.querySelector("#progress-fill"), best = document.querySelector("#best-score");
-  let pool = [], index = 0, score = 0, wrong = [], answered = false, isReview = false;
+  let pool = [], index = 0, score = 0, wrong = [], answered = false, isReview = false, quizAnswers = [];
   const hints = [
     "Standart anatomik pozisyonda kişi dik durur ve avuç içleri öne bakar.",
     "Proksimal, distal teriminin tersidir: uzvun başlangıcına daha yakın.",
@@ -78,7 +78,7 @@
   function readBest() { try { return Number(localStorage.getItem("ftr-atlasi-best-score") || 0); } catch { return 0; } }
   function showBest() { const value = readBest(); if (value > 0) { best.hidden = false; best.textContent = `En iyi sonucun: ${value} / ${data.questions.length}`; } }
   showBest();
-  function startQuiz(review = false) { isReview = review; pool = prepareQuestions(review ? [...wrong] : [...data.questions]); index = 0; score = 0; wrong = []; answered = false; welcome.hidden = true; result.hidden = true; play.hidden = false; renderQuestion(); }
+  function startQuiz(review = false) { isReview = review; pool = prepareQuestions(review ? [...wrong] : [...data.questions]); index = 0; score = 0; wrong = []; quizAnswers = []; answered = false; welcome.hidden = true; result.hidden = true; play.hidden = false; renderQuestion(); }
   function renderQuestion() {
     if (index >= pool.length) return renderResult();
     answered = false; const item = pool[index];
@@ -94,11 +94,25 @@
   function choose(choice) {
     if (answered) return; answered = true; const item = pool[index]; const buttons = [...answers.querySelectorAll("button")];
     buttons.forEach((button, i) => { button.disabled = true; if (i === item.answer) button.classList.add("answer-correct"); if (i === choice && choice !== item.answer) button.classList.add("answer-wrong"); });
-    const correct = choice === item.answer; if (correct) score++; else wrong.push(item);
+    const correct = choice === item.answer; quizAnswers.push({category:item.category,correct}); if (correct) score++; else wrong.push(item);
     document.querySelector("#live-score").textContent = `Puan ${score}`; track.setAttribute("aria-valuenow", index + 1); fill.style.width = `${Math.round((index + 1) / pool.length * 100)}%`;
     hintButton.disabled = true; feedback.hidden = false; feedback.classList.toggle("wrong", !correct); feedback.append(document.createTextNode(`${correct ? "Doğru! " : "Birlikte hatırlayalım. "}${item.explanation} `));
     
     next.textContent = index === pool.length - 1 ? "Sonucu gör →" : "Sonraki soru →"; next.hidden = false;
+  }
+  function saveHomepageQuizHistory() {
+    if (isReview || quizAnswers.length !== pool.length || !pool.length) return;
+    const categoryKeys = {"Yön ve konum":"direction","Kemikler":"bones","Kaslar":"muscle","Eklemler":"joints"};
+    const topics = Object.entries(categoryKeys).map(([category,key]) => {
+      const group = quizAnswers.filter((answer) => answer.category === category);
+      return {key,correct:group.filter((answer) => answer.correct).length,total:group.length};
+    }).filter((topic) => topic.total > 0);
+    try {
+      const existing = JSON.parse(localStorage.getItem("ftraQuizHistory") || "[]");
+      const history = Array.isArray(existing) ? existing : [];
+      history.push({date:new Date().toISOString(),score,total:pool.length,topics});
+      localStorage.setItem("ftraQuizHistory",JSON.stringify(history.slice(-20)));
+    } catch { /* Quiz sonucu gösterilmeye devam eder; yalnızca geçmiş kaydedilemeyebilir. */ }
   }
   function renderResult() {
     play.hidden = true; result.hidden = false;
@@ -110,6 +124,7 @@
     const review = document.querySelector("#wrong-review"); review.replaceChildren(); review.hidden = wrong.length === 0;
     if (wrong.length) { const label = document.createElement("strong"); label.textContent = "Bir tur daha bakabileceğin sorular:"; const list = document.createElement("ul"); wrong.forEach((item) => { const li = document.createElement("li"); li.textContent = `${item.question} Doğru yanıt: ${item.options[item.answer]}.`; list.append(li); }); review.append(label, list); }
     document.querySelector("#retry-wrong").hidden = wrong.length === 0;
+    saveHomepageQuizHistory();
     if (!isReview && score > readBest()) { try { localStorage.setItem("ftr-atlasi-best-score", score); } catch { /* Depolama kapalı olsa da quiz kullanılabilir. */ } showBest(); }
   }
   const modelData = {
