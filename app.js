@@ -153,6 +153,54 @@
     });
   }
   document.querySelectorAll("[data-structure]").forEach(button => button.addEventListener("click", () => showFemurStructure(button.dataset.structure)));
+
+  const femurProgressKey = "ftraFemurStructuresLearned";
+  const femurProgress = document.querySelector("#femur-progress");
+  const femurProgressLabel = document.querySelector("#femur-progress-label");
+  const femurLearnButton = document.querySelector("#femur-learned-toggle");
+  function readFemurProgress() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(femurProgressKey) || "[]");
+      return new Set(Array.isArray(saved) ? saved.filter(key => Object.hasOwn(femurStructures, key)) : []);
+    } catch { return new Set(); }
+  }
+  function renderFemurProgress() {
+    const learned = readFemurProgress();
+    const total = Object.keys(femurStructures).length;
+    if (femurProgress) {
+      femurProgress.style.width = Math.round(learned.size / total * 100) + "%";
+      femurProgress.parentElement?.setAttribute("aria-valuenow", String(learned.size));
+    }
+    if (femurProgressLabel) femurProgressLabel.textContent = learned.size + " / " + total + " yapı öğrenildi";
+    document.querySelectorAll("[data-structure]").forEach(button => {
+      const key = button.dataset.structure;
+      let marker = button.querySelector(".structure-learned-marker");
+      if (learned.has(key)) {
+        if (!marker) {
+          marker = document.createElement("span");
+          marker.className = "structure-learned-marker";
+          marker.setAttribute("aria-label", "Öğrenildi");
+          marker.textContent = "✓";
+          button.insertBefore(marker, button.lastElementChild);
+        }
+      } else marker?.remove();
+    });
+    const active = document.querySelector("[data-structure].is-active")?.dataset.structure || "head";
+    if (femurLearnButton) {
+      const done = learned.has(active);
+      femurLearnButton.textContent = done ? "Öğrendim ✓" : "Öğrendim";
+      femurLearnButton.setAttribute("aria-pressed", String(done));
+    }
+  }
+  femurLearnButton?.addEventListener("click", () => {
+    const active = document.querySelector("[data-structure].is-active")?.dataset.structure || "head";
+    const learned = readFemurProgress();
+    if (learned.has(active)) learned.delete(active); else learned.add(active);
+    try { localStorage.setItem(femurProgressKey, JSON.stringify([...learned])); } catch { /* Depolama kapalı olsa da öğrenme paneli çalışır. */ }
+    renderFemurProgress();
+  });
+  
+  renderFemurProgress();
   const modelButtons = [...document.querySelectorAll("[data-model]")];
   modelButtons.forEach(button => button.addEventListener("click", () => {
     if (structurePanel) structurePanel.hidden = button.dataset.model !== "femur";
