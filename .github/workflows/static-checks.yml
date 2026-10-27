@@ -73,6 +73,16 @@ jobs:
             process.exit(1);
           }
           const latinNames = muscles.map(m => m[1]?.trim().toLocaleLowerCase());
+          const visualBlock = html.match(/const visual=([\s\S]*?);if\(visual\)/);
+          if (!visualBlock) {
+            console.error('Could not find the muscle visual mapping block.');
+            process.exit(1);
+          }
+          const missingVisuals = muscles.map(m => m[1]).filter(name => !visualBlock[1].includes('m[1]==="' + name + '"'));
+          if (missingVisuals.length) {
+            console.error('Muscle entries missing an explicit visual mapping:', missingVisuals.join(', '));
+            process.exit(1);
+          }
           if (muscles.some(m => !Array.isArray(m) || m.length !== 7 || m.some(v => typeof v !== 'string' || !v.trim()))) {
             console.error('Each muscle must have seven non-empty fields: Turkish name, Latin name, region, origin, insertion, innervation, and function.');
             process.exit(1);
