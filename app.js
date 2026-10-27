@@ -129,6 +129,34 @@
     document.querySelector("#model-source").href = item.source;
     document.querySelectorAll("[data-model]").forEach((b) => { const active = b === button; b.classList.toggle("is-active", active); b.setAttribute("aria-pressed", String(active)); });
   }));
+  const femurStructures = {
+    head: {name:"Femur başı",latin:"Caput femoris",description:"Femur'un proksimal ucundaki küresel baş, asetabulum ile eklemleşerek kalça ekleminin femoral tarafını oluşturur.",memory:"Baş = kalça eklemiyle bağlantı."},
+    neck: {name:"Femur boynu",latin:"Collum femoris",description:"Baş ile gövdenin proksimal bölümü arasında uzanır. Kalça ekleminden gelen kuvvetlerin femur gövdesine aktarılmasında önemlidir.",memory:"Boyun, baş ile gövde arasındaki geçiştir."},
+    trochanter: {name:"Büyük trokanter",latin:"Trochanter major",description:"Femur'un proksimal dış yanında bulunan büyük çıkıntıdır. Kalça çevresindeki birçok kas için tutunma alanı sağlar.",memory:"Büyük trokanter = kasların tutunma çıkıntısı."},
+    shaft: {name:"Femur gövdesi",latin:"Corpus femoris",description:"Femur'un uzun orta bölümüdür. Güçlü kortikal kemiği sayesinde vücut ağırlığının taşınmasına ve yüklerin aktarılmasına katkı verir.",memory:"Gövde = kemiğin uzun orta kısmı."},
+    condyles: {name:"Medial ve lateral kondiller",latin:"Condylus medialis et condylus lateralis",description:"Femur'un distal ucundaki iki eklem yüzüdür. Tibianın üst yüzüyle eklemleşerek diz ekleminin femoral bölümünü oluştururlar.",memory:"Kondiller = diz tarafındaki distal eklem yüzleri."}
+  };
+  const structurePanel = document.querySelector("#femur-study");
+  function showFemurStructure(key) {
+    const item = femurStructures[key];
+    if (!item) return;
+    const keys = Object.keys(femurStructures);
+    document.querySelector("#structure-number").textContent = "YAPI " + String(keys.indexOf(key) + 1).padStart(2, "0") + " / " + keys.length;
+    document.querySelector("#structure-name").textContent = item.name;
+    document.querySelector("#structure-latin").textContent = item.latin;
+    document.querySelector("#structure-description").textContent = item.description;
+    document.querySelector("#structure-memory").textContent = item.memory;
+    document.querySelectorAll("[data-structure]").forEach(button => {
+      const active = button.dataset.structure === key;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+  document.querySelectorAll("[data-structure]").forEach(button => button.addEventListener("click", () => showFemurStructure(button.dataset.structure)));
+  const modelButtons = [...document.querySelectorAll("[data-model]")];
+  modelButtons.forEach(button => button.addEventListener("click", () => {
+    if (structurePanel) structurePanel.hidden = button.dataset.model !== "femur";
+  }));
   hintButton.addEventListener("click", () => { const item = pool[index]; hintText.textContent = item.hint || "Sorudaki anatomik bölgeyi ve Latince adı hatırla."; hintText.hidden = false; hintButton.hidden = true; });
   document.querySelector("#start-quiz").addEventListener("click", () => startQuiz());
   next.addEventListener("click", () => { index++; renderQuestion(); });
