@@ -246,3 +246,35 @@ body{background:#09121e;color:#e2edf8}
 .daily-plan-complete:disabled{background:#15372f;border-color:#2f7969}
 @media(max-width:620px){.dashboard-heading h1{font-size:2.25rem}.section-pad{padding-block:54px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* Interactive femur structure study panel */
+.structure-lab{margin-top:24px;padding:clamp(18px,3vw,30px);border:1px solid #26384b;border-radius:20px;background:linear-gradient(145deg,#101e2d,#0d1926);color:#e2edf8}
+.structure-lab-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}
+.structure-lab-heading .quiz-kicker{margin:0 0 7px;color:#65e8e0}
+.structure-lab-heading h3{margin:0;color:#edf6ff;font-size:clamp(1.25rem,2.5vw,1.75rem);letter-spacing:-.04em}
+.structure-lab-heading p:last-child{margin:7px 0 0;color:#a4b8cb;font-size:.82rem}
+.structure-count{flex:0 0 auto;padding:7px 10px;border:1px solid #2b485b;border-radius:999px;color:#8bdedb;font-size:.68rem;font-weight:800}
+.structure-lab-layout{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:14px}
+.structure-picker{display:grid;gap:8px;align-content:start}
+.structure-choice{display:flex;align-items:center;gap:11px;width:100%;min-height:64px;padding:10px 12px;border:1px solid #263b4f;border-radius:12px;background:#122233;color:#d7e6f3;text-align:left;cursor:pointer;transition:border-color .16s ease,background .16s ease}
+.structure-choice>span:first-child{display:grid;width:30px;height:30px;flex:0 0 auto;place-items:center;border-radius:9px;background:#20374a;color:#8ea8bd;font-size:.65rem;font-weight:850}
+.structure-choice>span:nth-child(2){display:flex;min-width:0;flex:1;flex-direction:column;gap:2px}
+.structure-choice b{font-size:.8rem;font-weight:800}
+.structure-choice small{color:#9bb0c3;font-size:.69rem;font-style:italic;overflow-wrap:anywhere}
+.structure-choice>span:last-child{color:#668ba2;font-size:.9rem}
+.structure-choice:hover{border-color:#477c8c;background:#162c3d}
+.structure-choice.is-active{border-color:#4bcac5;background:linear-gradient(110deg,#163b45,#142c3b);box-shadow:inset 3px 0 #65e8e0}
+.structure-choice.is-active>span:first-child{background:#65e8e0;color:#07131e}
+.structure-choice.is-active b,.structure-choice.is-active>span:last-child{color:#8af0e9}
+.structure-detail{min-width:0;padding:22px;border:1px solid #2a4357;border-radius:15px;background:radial-gradient(circle at 100% 0,#183747 0,transparent 45%),#0c1825}
+.structure-detail-number{color:#65e8e0;font-size:.63rem;font-weight:850;letter-spacing:.13em}
+.structure-detail h4{margin:17px 0 0;color:#f0f7ff;font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.15;letter-spacing:-.045em}
+.structure-detail-latin{margin:7px 0 17px;color:#8edbd8;font-family:Georgia,serif;font-size:1rem;font-style:italic}
+.structure-detail>p:not(.structure-detail-latin){margin:0;color:#bdccda;font-size:.86rem;line-height:1.8}
+.structure-fact{margin-top:20px;padding:13px 14px;border:1px solid #2a4858;border-radius:11px;background:#132b38}
+.structure-fact b{color:#8bece5;font-size:.7rem;letter-spacing:.03em}
+.structure-fact p{margin:5px 0 0;color:#d6e5ee;font-size:.8rem;line-height:1.6}
+.structure-disclaimer{margin:13px 1px 0;color:#7f99ad;font-size:.67rem;line-height:1.6}
+@media(max-width:700px){.structure-lab-layout{grid-template-columns:1fr}.structure-picker{grid-template-columns:1fr 1fr}.structure-choice{min-height:76px;gap:8px;padding:9px}.structure-choice>span:first-child{width:26px;height:26px}.structure-choice>span:last-child{display:none}.structure-detail{padding:19px}.structure-lab-heading{gap:10px}.structure-count{font-size:.61rem}}
+@media(max-width:420px){.structure-picker{grid-template-columns:1fr}.structure-choice{min-height:60px}.structure-choice>span:last-child{display:block}}
