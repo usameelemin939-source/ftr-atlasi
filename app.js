@@ -234,7 +234,7 @@
           }
           setModelInteractionStatus("Model hazır. 3B modelin üzerindeki bir parçaya tıkla; destekleniyorsa parça vurgulanır. Seçim, anatomik adı otomatik olarak belirlemeyebilir.", "ready");
           api.addEventListener("click", function (info) {
-            if (token !== sketchfabLoadToken || !info || !info.instanceID) {
+            if (token !== sketchfabLoadToken || !info || info.instanceID === undefined || info.instanceID === null) {
               setModelInteractionStatus("Model üzerinde seçilebilir bir parça bulunamadı. Başka bir noktaya tıkla.", "idle");
               return;
             }
