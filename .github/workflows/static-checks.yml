@@ -83,6 +83,18 @@ jobs:
             console.error('Muscle entries missing an explicit visual mapping:', missingVisuals.join(', '));
             process.exit(1);
           }
+          const missingAttribution = muscles.map(m => m[1]).filter(name => {
+            const marker = 'm[1]==="' + name + '"?{';
+            const start = visualBlock[1].indexOf(marker);
+            if (start < 0) return true;
+            const nextMapping = visualBlock[1].indexOf(':m[1]===', start + marker.length);
+            const mapping = visualBlock[1].slice(start, nextMapping < 0 ? undefined : nextMapping);
+            return !['src:', 'alt:', 'page:', 'credit:'].every(field => mapping.includes(field));
+          });
+          if (missingAttribution.length) {
+            console.error('Muscle image mappings missing source, alt text, or attribution/license details:', missingAttribution.join(', '));
+            process.exit(1);
+          }
           if (muscles.some(m => !Array.isArray(m) || m.length !== 7 || m.some(v => typeof v !== 'string' || !v.trim()))) {
             console.error('Each muscle must have seven non-empty fields: Turkish name, Latin name, region, origin, insertion, innervation, and function.');
             process.exit(1);
