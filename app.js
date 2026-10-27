@@ -28,11 +28,11 @@
       const label = document.createElement("strong"); label.textContent = "Hatırlatma";
       const note = document.createElement("p"); note.textContent = term.description;
       extra.append(label, note); details.append(summary, extra);
-      card.append(top, title, latin, description, details); fragment.append(card);
+      const source = document.createElement("a"); source.className = "term-source"; source.href = term.source; source.target = "_blank"; source.rel = "noopener noreferrer"; source.textContent = "Kaynak ve ayrıntılar ↗"; source.setAttribute("aria-label", `${term.tr} (${term.la}) için kaynak ve ayrıntıları aç`); card.append(top, title, latin, description, details, source); fragment.append(card);
     });
     grid.append(fragment); grid.hidden = terms.length === 0; grid.setAttribute("aria-busy", "false"); empty.hidden = terms.length > 0;
     count.textContent = `${terms.length} terim gösteriliyor`;
-    filters.forEach((button) => { button.classList.toggle("active", button.dataset.filter === activeFilter); button.setAttribute("aria-pressed", String(button.dataset.filter === activeFilter)); const badge = button.querySelector("[data-count]"); if (badge) badge.textContent = data.terms.length; });
+    filters.forEach((button) => { button.classList.toggle("active", button.dataset.filter === activeFilter); button.setAttribute("aria-pressed", String(button.dataset.filter === activeFilter)); const badge = button.querySelector("[data-count]"); if (badge) badge.textContent = button.dataset.filter === "all" ? data.terms.length : data.terms.filter((term) => term.category === button.dataset.filter).length; });
   }
   search.addEventListener("input", renderTerms);
   filters.forEach((button) => button.addEventListener("click", () => { activeFilter = button.dataset.filter; renderTerms(); }));
