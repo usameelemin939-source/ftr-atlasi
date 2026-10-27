@@ -104,6 +104,28 @@ jobs:
           console.log('Adult skeleton OK: 206 bones, named and expanded individually.');
           NODE
 
+      - name: Syntax-check inline JavaScript in every HTML page
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const pages = fs.readdirSync('.').filter(name => name.endsWith('.html'));
+          let checked = 0;
+          for (const page of pages) {
+            const html = fs.readFileSync(page, 'utf8');
+            const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+            for (const [, attrs, body] of scripts) {
+              if (/\bsrc\s*=/.test(attrs) || !body.trim()) continue;
+              new vm.Script(body, { filename: page + ':inline-script-' + (++checked) + '.js' });
+            }
+          }
+          if (!checked) {
+            console.error('No inline JavaScript blocks were found.');
+            process.exit(1);
+          }
+          console.log('Inline JavaScript syntax OK: ' + checked + ' script block(s) across ' + pages.length + ' HTML pages.');
+          NODE
+
       - name: Check duplicate HTML IDs on the home page
         run: |
           node <<'NODE'
