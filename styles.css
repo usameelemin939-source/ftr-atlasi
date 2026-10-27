@@ -330,3 +330,73 @@ body{background:#09121e;color:#e2edf8}
   .map-step-action{font-size:.68rem;gap:5px}
   .map-tools{grid-column:auto}
 }
+
+
+/* FTR Atlası — premium midnight visual identity refresh */
+:root{color-scheme:dark;--navy:#e8f2ff;--navy2:#d4e7fb;--ink:#e4edf8;--muted:#9aadc2;--teal:#123b48;--teal-dark:#62e5dc;--pale:#0d1927;--line:#26384b;--white:#111f2e}
+html{background:#09131f}
+body{background:radial-gradient(ellipse at 50% -18%,#173247 0,transparent 43%),#09131f;color:#e4edf8}
+.site-header{background:rgba(9,19,31,.9);border-bottom-color:#26384b}
+.brand,.main-nav a,.header-cta{color:#e6f3ff}
+.brand-mark{background:linear-gradient(145deg,#5de4dc,#2396a8);color:#07151f;box-shadow:0 0 24px #3ad8d533}
+.main-nav a{color:#a7bacd}
+.main-nav a:hover,.main-nav a:focus-visible{color:#6de9e1}
+.header-cta{background:#67e6dd;color:#07151f;border-radius:999px}
+.header-cta span{color:#07151f}
+.dashboard{padding-top:32px}
+.dashboard-heading{background:linear-gradient(125deg,#13283b 0%,#0f1c2a 62%,#102a35 100%);border:1px solid #294458;border-radius:24px;padding:clamp(22px,4vw,42px);box-shadow:0 28px 80px #0002}
+.dashboard-heading h1,.dashboard-heading h2{color:#f0f7ff}
+.dashboard-lead,.map-intro{color:#a9bdd0}
+.eyebrow.dark{color:#70e5dc}
+.today-card{background:#132638;border-color:#2b465a;color:#e3effa}
+.today-card p,.today-card small,.muted{color:#a1b6ca}
+.daily-plan-complete{border-color:#3b6878;background:#173b49;color:#8dece5}
+.mini-progress{background:#263d50}
+.mini-progress span{background:#65e6dc}
+.dashboard-section-title{margin-top:34px}
+.dashboard-section-title h2{color:#f1f7ff}
+.learning-map{max-width:none;gap:14px}
+.map-step{background:linear-gradient(135deg,#13283b,#0e1b29);border-color:#2a4358;border-radius:17px}
+.map-step:hover{border-color:#5ce2d9;background:linear-gradient(135deg,#173547,#112332)}
+.map-step-number{border-color:#315366;color:#6ee7df}
+.map-step-icon{background:#173b49;color:#6ee7df}
+.map-step-copy b{color:#edf6ff}
+.map-step-copy small{color:#a7bbce}
+.map-step-action{color:#76e8e0}
+.map-tools{background:#0d1b29;border-color:#294457;color:#a8bdcf}
+.map-tools a{border-color:#35576a;color:#7debe4}
+.dashboard-lower .lower-panel{background:#122538;border-color:#2b4358;color:#e5f0fa}
+.lower-panel small{color:#a5b8ca}
+.atlas{background:#0b1724}
+.section-head h2,.quiz-intro h2,.study-cta h2{color:#eff6ff}
+.section-head>div>p:last-child{color:#a5b8cb}
+.tools{background:#111f2e;border-color:#293e51}
+.search{background:#0b1724;border-color:#30465a}
+.search input{color:#edf6ff}
+.search input::placeholder{color:#8197ab}
+.search kbd{background:#16283a;border-color:#34485a;color:#9bb0c2}
+.chip{background:#192b3c;color:#afc1d2}
+.chip.active{background:#65e4dc;color:#07151f}
+.results,.source-note{color:#91a7bb}
+.results p:first-child{color:#e4effa}
+.term-card{background:linear-gradient(155deg,#142638,#101d2b);border-color:#293f52;box-shadow:0 8px 24px #0002}
+.term-card:hover{border-color:#4ebdbb;box-shadow:0 16px 34px #0003}
+.term-category{color:#8fa8bc}
+.term-symbol{background:#173b47;color:#75e8df}
+.term-card h3{color:#eff6ff}
+.term-latin,.term-description{color:#a4b8cb}
+.term-source,.text-link{color:#70e5dc}
+.empty{background:#101f2e;border-color:#355064}
+.empty h3{color:#f1f7ff}
+.empty p{color:#a6b9cb}
+.model-section{background:#0d1927;border-color:#24394b}
+.model-notes{background:#132538;border-color:#2a4357}
+.model-notes h3{color:#edf6ff}
+.model-notes ul,.model-note{color:#b2c4d5}
+.model-badge{background:#143a45;border-color:#2c646a;color:#7ce9e1}
+.study-cta{background:#122538;border-color:#2a4357}
+.study-cta div p:last-child{color:#a3b8ca}
+.footer{background:#060e18;border-top:1px solid #23384a}
+.sources a{color:#b4c7d8}
+@media(max-width:680px){.dashboard{padding-top:18px}.dashboard-heading{border-radius:19px}.dashboard-section-title{margin-top:26px}.main-nav a{color:#afc2d4}}
+@media(prefers-reduced-motion:reduce){.map-step,.term-card{transition:none}}
