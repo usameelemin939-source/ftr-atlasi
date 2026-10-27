@@ -21,7 +21,8 @@
 <form id="chat-form" class="composer"><label for="question"><b>Sorunu yaz</b></label><textarea id="question" maxlength="1200" placeholder="Örn. Femur başı ile asetabulum arasındaki ilişki nedir?" required></textarea><div class="actions"><span class="hint">En fazla 1200 karakter</span><button id="send" class="button primary" type="submit">Soruyu yanıtla ↗</button></div><p id="error" class="error" hidden></p></form>
 </section>
 <aside class="panel side"><div class="status" id="mode-status">Yerel öğrenme modu aktif. Gerçek AI API bağlantısı henüz yapılandırılmadı.</div><h2>Nasıl çalışır?</h2><ul><li>Türkçe ve Latince terimleri birlikte gör.</li><li>Önce kısa tanım, sonra klinik açıdan neden önemli olduğunu öğren.</li><li>Bir yanıt yeterli değilse soruyu daha belirgin yaz.</li></ul><div class="topic"><b>3B anatomi</b><p>Mevcut kemik modellerini atlas sayfasında açıp döndürebilirsin.</p><a href="index.html#3d-anatomi">3B kemik modellerine git →</a></div><div class="topic"><b>Ders Merkezi</b><p>Kısa ders başlıkları ve tekrar konuları.</p><a href="dersler.html">Ders Merkezi'ni aç →</a></div><div class="topic"><b>Önemli not</b><p>Bu eğitim aracıdır; tanı, tedavi planı veya hocanın ders materyalinin yerine geçmez. Cevapları ders kaynağınla karşılaştır.</p></div></aside>
-</div><footer class="foot">FTR Atlası · Anatomi Öğrenme Asistanı · Yerel mod cevapları sınırlı bir eğitim sözlüğüne dayanır. Gerçek AI için güvenli sunucu tarafı bağlantısı gerekir.</footer>
+</div><section class="panel" id="quiz-panel" style="margin-top:18px"><div class="panel-head"><h2>Hızlı anatomi quizi</h2><p>5 soruyla kendini dene. Her soruda doğru yanıtın açıklamasını gör.</p></div><div style="padding:17px" id="quiz-area"><div id="quiz-progress" class="hint">5 soruluk mini test</div><h3 id="quiz-question" style="font-size:1.08rem;margin:12px 0">Hazır mısın?</h3><div id="quiz-options" style="display:grid;gap:9px"></div><p id="quiz-feedback" aria-live="polite"></p><div class="actions"><span id="quiz-score" class="hint">Puan: 0 / 5</span><button id="quiz-next" type="button" class="button primary">Teste başla</button></div></div></section>
+<footer class="foot">FTR Atlası · Anatomi Öğrenme Asistanı · Yerel mod cevapları sınırlı bir eğitim sözlüğüne dayanır. Gerçek AI için güvenli sunucu tarafı bağlantısı gerekir.</footer>
 </main>
 <script>
 (() => {
@@ -73,6 +74,22 @@
   }
   form.addEventListener("submit",e=>{e.preventDefault();submit(input.value);});
   document.querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>submit(b.dataset.prompt)));
+  const quizQuestions = [
+    {q:"Femur hangi bölgenin kemiğidir?",o:["Uyluk","Önkol","Omurga","Ayak bileği"],a:0,e:"Femur uyluk kemiğidir; kalça ve diz eklemleriyle ilişkilidir."},
+    {q:"Tibianın bacağın hangi tarafında yer alır?",o:["Lateral (dış)","Medial (iç)","Önkol tarafında","El bileğinde"],a:1,e:"Tibia bacağın medialinde; fibula lateralinde bulunur."},
+    {q:"Dirseği düzleştirmede başlıca hangi kas görev alır?",o:["Biceps brachii","Quadriceps femoris","Triceps brachii","Soleus"],a:2,e:"Triceps brachii dirsek ekstansiyonunun başlıca kasıdır."},
+    {q:"Gövdeye daha yakın konumu anlatan terim hangisidir?",o:["Distal","Lateral","Proksimal","Posterior"],a:2,e:"Proksimal, uzvun başlangıcına veya gövdeye daha yakın demektir."},
+    {q:"Femur başı hangi yapıyla eklemleşerek kalça eklemine katılır?",o:["Asetabulum","Olecranon","Patella","Glenoid boşluk"],a:0,e:"Femur başı, pelvisteki asetabulum ile eklemleşir."}
+  ];
+  const quizArea=$("#quiz-area"), quizQ=$("#quiz-question"), quizOpts=$("#quiz-options"), quizFeedback=$("#quiz-feedback"), quizNext=$("#quiz-next"), quizProgress=$("#quiz-progress"), quizScore=$("#quiz-score");
+  let qi=-1, score=0, answered=false, quizOrder=[];
+  function renderQuiz(){answered=false;quizFeedback.textContent="";quizOpts.replaceChildren();
+    if(qi>=quizOrder.length){quizProgress.textContent="Test tamamlandı";quizQ.textContent="Sonuç: "+score+" / "+quizOrder.length;quizFeedback.textContent=score>=4?"Harika! Temel kavramların güçlü.":"Güzel başlangıç. Yanlış yaptığın soruları asistana sorup tekrar dene.";quizNext.textContent="Yeniden çöz";quizScore.textContent="Başarı: %"+Math.round(score/quizOrder.length*100);return;}
+    const item=quizQuestions[quizOrder[qi]];quizProgress.textContent="Soru "+(qi+1)+" / "+quizOrder.length;quizQ.textContent=item.q;quizScore.textContent="Puan: "+score+" / "+quizOrder.length;
+    item.o.forEach((option,i)=>{const b=document.createElement("button");b.type="button";b.className="button";b.textContent=String.fromCharCode(65+i)+". "+option;b.style.textAlign="left";b.addEventListener("click",()=>{if(answered)return;answered=true;const correct=i===item.a;if(correct)score++;[...quizOpts.children].forEach((el,j)=>{el.disabled=true;if(j===item.a){el.style.borderColor="#56c99b";el.style.background="#12372e"}else if(j===i&&!correct){el.style.borderColor="#cf7979";el.style.background="#3a2027"}});quizFeedback.textContent=(correct?"Doğru. ":"Tekrar et. ")+item.e;quizScore.textContent="Puan: "+score+" / "+quizOrder.length;quizNext.textContent=qi===quizOrder.length-1?"Sonucu gör":"Sonraki soru";});quizOpts.append(b);});
+    quizNext.textContent="Yanıtı seç";
+  }
+  quizNext.addEventListener("click",()=>{if(qi<0||qi>=quizOrder.length){quizOrder=quizQuestions.map((_,i)=>i).sort(()=>Math.random()-.5);qi=0;score=0;renderQuiz();return;}if(!answered)return;qi++;renderQuiz();});
   if(typeof window.FTR_AI_ENDPOINT==="string"&&window.FTR_AI_ENDPOINT.startsWith("/")&&!window.FTR_AI_ENDPOINT.startsWith("//")){$("#mode-status").textContent="AI uç noktası tanımlı. Yanıtlar sunucu tarafındaki servisten istenecek." ;$("#mode-status").classList.add("ready");}
 })();
 </script>
