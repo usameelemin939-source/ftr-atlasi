@@ -187,13 +187,17 @@ const TOPICS=[
  {n:5,title:'Nörolojik Kronik Hastalıklarda Psikososyal Süreç',focus:'MS, Parkinson gibi hastalıklarda bilişsel-duygusal değişimler, belirsizlikle baş etme ve yaşam kalitesi.'}
 ];
 function renderTopicAssignments(){
- const assigned=tasks.filter(t=>/^Sunum Grubu [1-5]$/.test(t.category));
- $('topicAssignments').innerHTML=assigned.length?assigned.map(t=>{const no=Number(t.category.replace('Sunum Grubu ',''));const topic=TOPICS.find(x=>x.n===no);return '<article class="item"><div class="row"><strong>Grup '+no+' · '+esc(topic?.title||t.title)+'</strong><span class="tag">'+esc(memberName(t.assignee_id))+'</span></div><p>'+esc(topic?.focus||t.description)+'</p></article>'}).join(''):'<div class="empty">Henüz konu seçilmedi. İlk seçimi sen yapabilirsin.</div>';
+ const assigned=tasks.filter(t=>/^Sunum Grubu [1-5]$/.test(t.category)&&t.assignee_id);
+ $('topicAssignments').innerHTML=TOPICS.map(topic=>{
+  const people=[...new Set(assigned.filter(t=>t.category==='Sunum Grubu '+topic.n).map(t=>t.assignee_id))];
+  const names=people.map(id=>members.find(m=>m.user_id===id)?.display_name||'Üye');
+  return '<article class="item"><div class="row"><strong>Grup '+topic.n+' · '+esc(topic.title)+'</strong><span class="tag">'+people.length+' kişi</span></div><p>'+esc(topic.focus)+'</p><small>'+(names.length?names.map(esc).join(' · '):'Henüz kimse seçmedi')+'</small></article>';
+ }).join('');
 }
 async function assignTopic(no,mode='manual'){
  let topic;
  if(mode==='auto'){
-  const counts=TOPICS.map(t=>({n:t.n,count:tasks.filter(x=>x.category==='Sunum Grubu '+t.n&&x.assignee_id).length}));
+  const counts=TOPICS.map(t=>({n:t.n,count:new Set(tasks.filter(x=>x.category==='Sunum Grubu '+t.n&&x.assignee_id).map(x=>x.assignee_id)).size}));
   counts.sort((a,b)=>a.count-b.count||a.n-b.n);
   no=counts[0].n;
  }
