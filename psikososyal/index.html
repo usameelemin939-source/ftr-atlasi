@@ -148,7 +148,7 @@ $('onboardingForm').onsubmit=async e=>{
  $('matchResult').innerHTML='<strong>Sana önerilen ana konu: Grup '+topicNo+' · '+esc(topic.title)+'</strong><br><strong>Başlangıç görevin: '+esc(strongest.key)+'</strong><br>'+esc(strongest.focus)+'<br><span class="muted">Çalışma yöntemin: '+esc(methodLabel)+' · Haftalık zaman: '+esc($('timeChoice').value)+'</span>';
  $('matchResult').classList.remove('hidden');
  await loadApp();go('tasks');toast('Kişisel görev önerin kaydedildi.');
-}$('signOutJoin').onclick=()=>sb.auth.signOut();$('logout').onclick=()=>sb.auth.signOut();
+};$('signOutJoin').onclick=()=>sb.auth.signOut();$('logout').onclick=()=>sb.auth.signOut();
 sb.auth.onAuthStateChange((_event,session)=>{if(!session){user=null;show('authView')}});
 async function routeUser(){const {data:{user:u}}=await sb.auth.getUser();user=u;if(!u){show('authView');return}const {data:m}=await sb.from('group_members').select('group_id').eq('user_id',u.id).maybeSingle();if(!m){const code=u.user_metadata?.invite_code;if(code){const joined=await sb.rpc('join_study_group',{invite:code,member_name:u.user_metadata?.display_name||'Üye'});if(!joined.error){await sb.auth.updateUser({data:{...(u.user_metadata||{}),invite_code:null}});const {data:{user:updated}}=await sb.auth.getUser();user=updated;await loadApp();return}}show('joinView');$('joinName').value=u.user_metadata?.display_name||'';$('inviteCode').value=code||'';return}await loadApp()}
 async function loadApp(){const {data:{user:u}}=await sb.auth.getUser();user=u;if(!user)return;show('appView');$('userLabel').textContent=user.user_metadata?.display_name||user.email;
