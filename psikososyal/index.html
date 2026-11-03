@@ -13,14 +13,15 @@
 <div id="authView" class="auth">
  <div class="brand"><div class="logo">PR</div><div><div class="eyebrow">Ankara Medipol · FTR</div><h1>Psikososyal Grup Merkezi</h1></div></div>
  <h2>Birlikte planlayalım.</h2><p class="muted">19 kişilik ekibin görevlerini, araştırmalarını ve sunum hazırlığını tek yerde topla.</p>
- <div class="tabs"><button id="loginTab" class="secondary">Giriş yap</button><button id="signupTab" class="ghost">Hesap oluştur</button></div>
+ <div class="tabs"><button id="signupTab" class="secondary">Davet koduyla katıl</button><button id="loginTab" class="ghost">Eski hesabımla giriş</button></div>
  <form id="authForm" class="formgrid">
-  <label id="nameWrap" class="hidden">Ad Soyad<input id="displayName" autocomplete="name" placeholder="Adın ve soyadın"></label>\n  <label id="inviteWrap" class="hidden">Grup davet kodu<input id="signupInvite" autocomplete="off" placeholder="Grup arkadaşının gönderdiği kod"></label>
-  <label>E-posta<input id="email" type="email" required autocomplete="email" placeholder="ornek@mail.com"></label>
-  <label>Şifre<input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="En az 6 karakter"></label>
-  <button id="authSubmit" type="submit">Giriş yap</button>
+  <label id="nameWrap">Ad Soyad<input id="displayName" autocomplete="name" placeholder="Adın ve soyadın"></label>
+  <label id="inviteWrap">Grup davet kodu<input id="signupInvite" autocomplete="off" placeholder="Grup arkadaşının gönderdiği kod"></label>
+  <label id="emailWrap" class="hidden">E-posta<input id="email" type="email" autocomplete="email" placeholder="ornek@mail.com"></label>
+  <label id="passwordWrap" class="hidden">Şifre<input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="En az 6 karakter"></label>
+  <button id="authSubmit" type="submit">Davet koduyla katıl</button>
  </form><div id="authMessage" class="notice hidden"></div>
- <p class="foot">Yeni misin? Hesap oluştururken grup davet kodunu gir. Giriş yaptıktan sonra site sana adım adım yol gösterecek.</p>
+ <p class="foot">Yeni üyeler için e-posta gerekmez. Adını ve grup davet kodunu gir. Eski hesaplar e-posta ile giriş yapmaya devam edebilir.</p>
 </div>
 <div id="joinView" class="auth hidden">
  <div class="brand"><div class="logo">PR</div><div><div class="eyebrow">Ekip daveti</div><h1>Gruba katıl</h1></div></div>
@@ -91,9 +92,9 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast=m=>{$('toast').textContent=m;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),3000)};
 function show(id){['authView','joinView','onboardingView','appView'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
-function setAuthMode(mode){authMode=mode;$('nameWrap').classList.toggle('hidden',mode==='login');$('inviteWrap').classList.toggle('hidden',mode==='login');$('signupInvite').required=mode==='signup';$('loginTab').className=mode==='login'?'secondary':'ghost';$('signupTab').className=mode==='signup'?'secondary':'ghost';$('authSubmit').textContent=mode==='login'?'Giriş yap':'Davet koduyla hesap oluştur';$('password').autocomplete=mode==='login'?'current-password':'new-password'}
-$('loginTab').onclick=()=>setAuthMode('login');$('signupTab').onclick=()=>setAuthMode('signup');\nsetAuthMode('signup');
-$('authForm').onsubmit=async e=>{e.preventDefault();const email=$('email').value.trim(),password=$('password').value;let r;if(authMode==='signup'){r=await sb.auth.signUp({email,password,options:{data:{display_name:$('displayName').value.trim(),invite_code:$('signupInvite').value.trim()}}})}else{r=await sb.auth.signInWithPassword({email,password})}if(r.error){$('authMessage').textContent=r.error.message;$('authMessage').classList.remove('hidden');return}if(authMode==='signup'&&!r.data.session){$('authMessage').textContent='Hesabın oluşturuldu. E-postanı doğrula, sonra giriş yap. Davet kodun korunacak ve gruba katılma adımında otomatik gelecek.';$('authMessage').classList.remove('hidden');return}await routeUser()};
+function setAuthMode(mode){authMode=mode;const quick=mode==='quick';$('nameWrap').classList.toggle('hidden',!quick);$('inviteWrap').classList.toggle('hidden',!quick);$('emailWrap').classList.toggle('hidden',quick);$('passwordWrap').classList.toggle('hidden',quick);$('email').required=!quick;$('password').required=!quick;$('signupInvite').required=quick;$('loginTab').className=mode==='login'?'secondary':'ghost';$('signupTab').className=quick?'secondary':'ghost';$('authSubmit').textContent=quick?'Davet koduyla katıl':'Giriş yap';$('password').autocomplete='current-password'}
+$('loginTab').onclick=()=>setAuthMode('login');$('signupTab').onclick=()=>setAuthMode('quick');\nsetAuthMode('quick');
+$('authForm').onsubmit=async e=>{e.preventDefault();let r;if(authMode==='quick'){const name=$('displayName').value.trim(),code=$('signupInvite').value.trim();if(!name||!code){$('authMessage').textContent='Adını ve davet kodunu doldur.';$('authMessage').classList.remove('hidden');return}r=await sb.auth.signInAnonymously({options:{data:{display_name:name,invite_code:code}}})}else{r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value})}if(r.error){$('authMessage').textContent=authMode==='quick'?'E-postasız giriş açılamadı. Supabase projesinde Anonymous Sign-Ins etkinleştirilmeli. Ayrıntı: '+r.error.message:r.error.message;$('authMessage').classList.remove('hidden');return}await routeUser()};
 $('joinForm').onsubmit=async e=>{e.preventDefault();const {error}=await sb.rpc('join_study_group',{invite:$('inviteCode').value.trim(),member_name:$('joinName').value.trim()});if(error){$('joinMessage').textContent='Davet kodu kabul edilmedi veya katılım tamamlanamadı: '+error.message;$('joinMessage').classList.remove('hidden');return}await sb.auth.updateUser({data:{display_name:$('joinName').value.trim(),invite_code:null}});const {data:{user:u}}=await sb.auth.getUser();user=u;show('onboardingView')};\n$('onboardingForm').onsubmit=async e=>{e.preventDefault();const work=[...document.querySelectorAll('input[name="work"]:checked')].map(x=>x.value);if(!work.length){toast('En az bir çalışma alanı seç.');return}const metadata={...(user?.user_metadata||{}),onboarding_complete:true,work_preferences:work,presentation_preference:$('presentChoice').value,weekly_time:$('timeChoice').value};const {error}=await sb.auth.updateUser({data:metadata});if(error){toast(error.message);return}const {data:{user:u}}=await sb.auth.getUser();user=u;await loadApp();go('tasks');toast('Hoş geldin! Sana uygun görevlerden başlayabilirsin.')};
 $('signOutJoin').onclick=()=>sb.auth.signOut();$('logout').onclick=()=>sb.auth.signOut();
 sb.auth.onAuthStateChange((_event,session)=>{if(!session){user=null;show('authView')}});
